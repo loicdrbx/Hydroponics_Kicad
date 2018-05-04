@@ -404,10 +404,8 @@ F 3 "" H 3850 7450 50  0000 C CNN
 	1    3850 7450
 	-1   0    0    -1  
 $EndComp
-Text GLabel 1150 1900 0    50   Input ~ 0
-PH_VOUT
 Text GLabel 1150 2000 0    50   Input ~ 0
-PH_VREF
+PH_VOUT
 Text Notes 875  2875 0    50   ~ 0
 +12V IN
 $Comp
@@ -465,7 +463,7 @@ L CONN_01X04 P3
 U 1 1 5AE7B68F
 P 7150 4700
 F 0 "P3" H 7150 4950 50  0000 C CNN
-F 1 "CONN_01X04" V 7250 4700 50  0000 C CNN
+F 1 "0022053041" V 7250 4700 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Angled_1x04" H 7150 4700 50  0001 C CNN
 F 3 "" H 7150 4700 50  0000 C CNN
 	1    7150 4700
@@ -757,7 +755,7 @@ F 3 "" H 4950 6000 50  0000 C CNN
 $EndComp
 Text Notes 2350 2850 0    50   ~ 0
 can use MCP9700\nor similar
-Text GLabel 1150 2100 0    50   Input ~ 0
+Text GLabel 1150 1900 0    50   Input ~ 0
 TEMP_SENSE_IN
 Text Notes -2200 7000 0    50   ~ 0
 Estimated PH probe impedance:\n~750MOhm\n\nOffset caused by leakage:\nVdiff = Ileak * Rprobe  = 750e+6*Ileak\n\nex: 1pA input bias leads to an 0.75mV error at the input.\n
@@ -1295,7 +1293,7 @@ L BARREL_JACK CON1
 U 1 1 5AEC4344
 P 900 3250
 F 0 "CON1" H 900 3500 50  0000 C CNN
-F 1 "BARREL_JACK" H 900 3050 50  0000 C CNN
+F 1 "PJ-202A" H 900 3050 50  0000 C CNN
 F 2 "Connect:BARREL_JACK" H 900 3250 50  0001 C CNN
 F 3 "" H 900 3250 50  0000 C CNN
 	1    900  3250
@@ -1351,28 +1349,15 @@ F 3 "" H 8900 4000 50  0000 C CNN
 	1    8900 4000
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8900 4500 9700 4500
-Wire Wire Line
-	8900 5250 9700 5250
 Connection ~ 8900 5250
 Wire Wire Line
-	9600 4500 9600 4800
+	9550 5100 9550 5400
 Wire Wire Line
-	9600 4800 9700 4800
-Connection ~ 9600 4500
+	9550 5400 9650 5400
 Wire Wire Line
-	9600 4950 9600 5250
-Wire Wire Line
-	9600 4950 9700 4950
-Connection ~ 9600 5250
-Wire Wire Line
-	9600 4650 9700 4650
-Connection ~ 9600 4650
-Wire Wire Line
-	9600 5100 9700 5100
-Connection ~ 9600 5100
-Text Notes 9450 4350 0    60   ~ 0
+	9550 5250 9650 5250
+Connection ~ 9550 5250
+Text Notes 10100 5100 0    60   ~ 0
 GROW LIGHTS OUT
 Text Notes 10700 850  0    60   ~ 0
 PUMPS OUT
@@ -1414,13 +1399,13 @@ Gain of 2
 $Comp
 L 282836-6 J1
 U 1 1 5AEDA89B
-P 9750 4850
-F 0 "J1" H 9725 5125 60  0000 C CNN
-F 1 "282836-6" H 9725 5050 60  0000 C CNN
-F 2 "USER_CONNECTORS:282836-6" H 9650 5225 60  0001 C CNN
-F 3 "" H 9750 4950 60  0001 C CNN
-	1    9750 4850
-	0    1    -1   0   
+P 9700 5050
+F 0 "J1" H 9675 5325 60  0000 C CNN
+F 1 "282836-6" H 9675 5250 60  0000 C CNN
+F 2 "USER_CONNECTORS:282836-6" H 9600 5425 60  0001 C CNN
+F 3 "" H 9700 5150 60  0001 C CNN
+	1    9700 5050
+	0    1    1    0   
 $EndComp
 $Comp
 L 282836-6 J2
@@ -1515,7 +1500,7 @@ L CONN_01X02 P1
 U 1 1 5AEE0822
 P 800 4300
 F 0 "P1" H 800 4450 50  0000 C CNN
-F 1 "CONN_01X02" V 900 4300 50  0000 C CNN
+F 1 "22-05-3021" V 900 4300 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Angled_1x02" H 800 4300 50  0001 C CNN
 F 3 "" H 800 4300 50  0000 C CNN
 	1    800  4300
@@ -1570,7 +1555,7 @@ L CONN_01X02 P4
 U 1 1 5AEE22BF
 P 2150 4300
 F 0 "P4" H 2150 4450 50  0000 C CNN
-F 1 "CONN_01X02" V 2250 4300 50  0000 C CNN
+F 1 "22-05-3021" V 2250 4300 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Angled_1x02" H 2150 4300 50  0001 C CNN
 F 3 "" H 2150 4300 50  0000 C CNN
 	1    2150 4300
@@ -1597,7 +1582,7 @@ L CONN_01X03 P2
 U 1 1 5AEE255E
 P 800 5150
 F 0 "P2" H 800 5350 50  0000 C CNN
-F 1 "CONN_01X03" V 900 5150 50  0000 C CNN
+F 1 "0022053031" V 900 5150 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Angled_1x03" H 800 5150 50  0001 C CNN
 F 3 "" H 800 5150 50  0000 C CNN
 	1    800  5150
@@ -1672,7 +1657,7 @@ L CONN_01X02 P5
 U 1 1 5AEE38AA
 P 3550 4300
 F 0 "P5" H 3550 4450 50  0000 C CNN
-F 1 "CONN_01X02" V 3650 4300 50  0000 C CNN
+F 1 "22-05-3021" V 3650 4300 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Angled_1x02" H 3550 4300 50  0001 C CNN
 F 3 "" H 3550 4300 50  0000 C CNN
 	1    3550 4300
@@ -1774,4 +1759,38 @@ Vguard
 Wire Wire Line
 	3900 6550 3950 6550
 Connection ~ 3900 6550
+Text Notes -3850 3700 0    60   ~ 0
+POWER BUDGET:\nWorst Case 12V input:\nLED Strips:\nSearches put them somewhere near 0.5A per 5 foot strip\nWe have space for 3, including safety factor, budget for 2A total.\n\nMotors: Worst case 1.75A total\n\n4A/48W worst case continuous current consumption (with safety factor)\n
+Text Notes -3850 2700 0    60   ~ 0
+Barrel jack is 2.1mmx5.5mm\nCompatible supply could be:\nSDI65-12-UDC-P5R (this is likely overkill, we could probably use a cheaper one)
+Text GLabel 1150 2100 0    50   Input ~ 0
+Vguard
+Wire Wire Line
+	8900 4500 9250 4500
+Wire Wire Line
+	9250 4500 9250 5100
+Wire Wire Line
+	9250 5100 9650 5100
+Connection ~ 9550 5100
+Wire Wire Line
+	9550 4950 9650 4950
+Wire Wire Line
+	9550 4450 9550 4950
+Wire Wire Line
+	9550 4650 9650 4650
+Wire Wire Line
+	9650 4800 9550 4800
+Connection ~ 9550 4800
+$Comp
+L +12V #PWR038
+U 1 1 5AED1397
+P 9550 4450
+F 0 "#PWR038" H 9550 4300 50  0001 C CNN
+F 1 "+12V" H 9550 4590 50  0000 C CNN
+F 2 "" H 9550 4450 50  0000 C CNN
+F 3 "" H 9550 4450 50  0000 C CNN
+	1    9550 4450
+	1    0    0    -1  
+$EndComp
+Connection ~ 9550 4650
 $EndSCHEMATC

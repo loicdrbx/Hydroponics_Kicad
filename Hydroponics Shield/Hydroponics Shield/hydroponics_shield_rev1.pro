@@ -1,4 +1,4 @@
-update=03-May-18 11:54:45 PM
+update=Fri 04 May 2018 12:09:16 PM EDT
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=G:/Project Resources/Kicad/Component Libraries
+LibDir=/home/tim/kicad/Component Libraries
 [eeschema/libraries]
 LibName1=USER_SYMBOLS
 LibName2=USER_MOSFETS
