@@ -1,0 +1,32 @@
+Title,
+Revision,
+Date,
+Generated,Mon 11 Jun 2018 11:26:37 AM EDT
+Company,
+Comment 1,
+Comment 2,
+Comment 3,
+Comment 4,
+Total Parts,23
+Total Unique Parts,11
+
+
+
+Ref,Qty,Value,Footprint,Datasheet,Category,DK_Datasheet_Link,DK_Detail_Page,Description,Digi-Key_PN,Family,Field4,MPN,Manufacturer,
+C2 C4 ,2,0.1uF,Capacitors_SMD:C_0805_HandSoldering,, , , , , , , , , 
+C3 ,1,5ZLH100MEFC6.3X11,Capacitors_ThroughHole:C_Radial_D6.3_L11.2_P2.5,, , , , , , ,100uF 35V, , 
+D1 D2 D3 D4 ,4,GRN,LEDs:LED_0805,, , , , , , , , , 
+DS1 ,1,OLED_GENERIC_SSD1305_20PIN_128x64,USER_DISPLAYS:128x64_OLED_20PIN_HORIZONTAL,, , , , , , , , , 
+ENC1 ,1,EC11K1524406,USER_MECHANICAL_OTHER:EC11K1524406,, , , , , , , , , 
+J1 ,1,RJHSE-5080,USER_CONNECTORS:RJHSE-5080,, , , , , , , , , 
+R1 R2 R3 R4 R5 ,5,10.0k,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R6 R7 R8 R9 ,4,120,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R10 ,1,0,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R11 R12 ,2,DNP,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+U1 ,1,AZ1117CH-3_3TRG1,digikey-footprints:SOT-223,https://www.diodes.com/assets/Datasheets/AZ1117C.pdf,Integrated Circuits (ICs),https://www.diodes.com/assets/Datasheets/AZ1117C.pdf,/product-detail/en/diodes-incorporated/AZ1117CH-3.3TRG1/AZ1117CH-3.3TRG1DICT-ND/4505206,IC REG LIN POS ADJ 800MA SOT223,AZ1117CH-3.3TRG1DICT-ND,PMIC - Voltage Regulators - Linear, ,AZ1117CH-3.3TRG1,Diodes Incorporated
+
+
+
+
+BOM made with KICAD_BOM_WIZARD (https://github.com/HashDefineElectronics/KiCad_BOM_Wizard.git)
+Generated Mon 11 Jun 2018 11:26:37 AM EDT
