@@ -6,6 +6,8 @@
 
 //function prototypes
 void displaySplashScreen(void); //displays the splash screen
+void refreshDisplay(void);
+void parseInputs(char);
 void displayGenericMenu(void); //displays a generic menu
 
 //display object constructor
@@ -115,3 +117,77 @@ void displayGenericMenu()
 
   } while ( display.nextPage() ); //display.nextpage will return 0 once the contents of the loop are done being written to the display
 }
+
+
+void refreshDisplay()             //this function defines what the OLED should display, based on the uiLevel and uiItem variables
+{
+  if(uiLevel==0)                  //TOP UI LEVEL, SPLASHSCREEN
+  {
+
+  }
+
+  if(uiLevel==1)                  //FIRST LEVEL OF SUBMENUS
+  {
+    if(uiItem==0)                 //FIRST LEVEL, ITEM 1
+    {
+
+    }
+
+    if(uiItem==1)                 //FIRST LEVEL, ITEM 2
+    {
+
+    }
+
+  }
+
+
+
+
+}
+
+void parseInput(char command)
+{
+
+}
+
+class menu
+{
+  public:
+  uint8_t level;      //current UI level (depth)
+  uint8_t item;       //current UI item (lateral menu movement)
+  uint8_t cursorPos;  //cursor position
+
+  menu()         //default constructor, set menu position to (0,0) and cursor position to 0
+  {
+    level = 0;
+    item = 0;
+    cursorPos = 0;
+  }
+
+  //DIAGRAM FOR MENU HEIRARCHY
+  /*
+  level = 0:                                               SPLASHSCREEN
+  level = 1:                MENU0(item=0)                 MENU1(item=1)       MENU2(item=2)       one cursor position per option, up/down scrolls to next option
+  level = 2:  MENU0 OPTION0   MENU0 OPTION1   MENU0 OPTION2
+                (item=0)        (item=1)        (item=2)
+*/
+
+  void parseInput(char command)
+  {
+    if(level==0 && command == 'E') //go to next level past splashscreen if enter is pressed
+    {
+      level=1;
+    }
+
+    if(level==1 && command=='E')   //enter the menu options for the selected menu
+    {
+
+    }
+  }
+
+  void refreshDisplay()
+  {
+
+  }
+
+};
