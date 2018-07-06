@@ -2845,4 +2845,9 @@ F 11 "MPD (Memory Protection Devices)" H 3700 9500 60  0001 L CNN "Manufacturer"
 	1    3500 8400
 	1    0    0    -1  
 $EndComp
+Connection ~ 8500 1650
+Text Notes 8000 2050 0    60   ~ 0
+TODO:\nConnect this to ground...\n
+Text Notes 2450 7150 0    60   ~ 0
+display address is 0x3C
 $EndSCHEMATC

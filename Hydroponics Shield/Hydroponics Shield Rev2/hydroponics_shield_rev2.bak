@@ -2775,34 +2775,15 @@ Wire Wire Line
 Connection ~ 9600 5550
 Text Notes 8300 5400 0    60   ~ 0
 offset zero jumper
-$Comp
-L BS-7 BAT1
-U 1 1 5B23F5A7
-P 3350 8400
-F 0 "BAT1" H 3350 8600 60  0000 C CNN
-F 1 "BS-7" H 3350 8200 60  0000 C CNN
-F 2 "digikey-footprints:BS-7" H 3550 8600 60  0001 L CNN
-F 3 "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf" H 3550 8700 60  0001 L CNN
-F 4 "BS-7-ND" H 3550 8800 60  0001 L CNN "Digi-Key_PN"
-F 5 "BS-7" H 3550 8900 60  0001 L CNN "MPN"
-F 6 "Battery Products" H 3550 9000 60  0001 L CNN "Category"
-F 7 "Battery Holders, Clips, Contacts" H 3550 9100 60  0001 L CNN "Family"
-F 8 "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf" H 3550 9200 60  0001 L CNN "DK_Datasheet_Link"
-F 9 "/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447" H 3550 9300 60  0001 L CNN "DK_Detail_Page"
-F 10 "HOLDER COINCELL 2032 RETAINRCLIP" H 3550 9400 60  0001 L CNN "Description"
-F 11 "MPD (Memory Protection Devices)" H 3550 9500 60  0001 L CNN "Manufacturer"
-	1    3350 8400
-	1    0    0    -1  
-$EndComp
 Text Notes 1350 8350 0    60   ~ 0
 3V battery \nbackup for RTC
 Wire Wire Line
-	3050 8400 2900 8400
+	2900 8400 3200 8400
 Wire Wire Line
 	2600 8400 2350 8400
 Connection ~ 2350 8400
 Wire Wire Line
-	3650 8400 3900 8400
+	3800 8400 3900 8400
 Wire Wire Line
 	3900 8400 3900 8600
 $Comp
@@ -2845,4 +2826,26 @@ Wire Wire Line
 Connection ~ 3000 8400
 Text GLabel 3000 8150 1    60   Input ~ 0
 BATT_BACKUP
+$Comp
+L BS-7_2032 BAT1
+U 1 1 5B24898A
+P 3500 8400
+F 0 "BAT1" H 3500 8600 60  0000 C CNN
+F 1 "BS-7_2032" H 3500 8200 60  0000 C CNN
+F 2 "USER_CONNECTORS:BS-7_USER" H 3700 8600 60  0001 L CNN
+F 3 "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf" H 3700 8700 60  0001 L CNN
+F 4 "BS-7-ND" H 3700 8800 60  0001 L CNN "Digi-Key_PN"
+F 5 "BS-7" H 3700 8900 60  0001 L CNN "MPN"
+F 6 "Battery Products" H 3700 9000 60  0001 L CNN "Category"
+F 7 "Battery Holders, Clips, Contacts" H 3700 9100 60  0001 L CNN "Family"
+F 8 "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf" H 3700 9200 60  0001 L CNN "DK_Datasheet_Link"
+F 9 "/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447" H 3700 9300 60  0001 L CNN "DK_Detail_Page"
+F 10 "HOLDER COINCELL 2032 RETAINRCLIP" H 3700 9400 60  0001 L CNN "Description"
+F 11 "MPD (Memory Protection Devices)" H 3700 9500 60  0001 L CNN "Manufacturer"
+	1    3500 8400
+	1    0    0    -1  
+$EndComp
+Connection ~ 8500 1650
+Text Notes 8000 2050 0    60   ~ 0
+TODO:\nConnect this to ground...\n
 $EndSCHEMATC

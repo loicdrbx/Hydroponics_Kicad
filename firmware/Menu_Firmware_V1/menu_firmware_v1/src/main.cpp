@@ -1,8 +1,30 @@
 #include <Arduino.h>
 #include <U8g2lib.h>
 #include <string.h>
+#include <Wire.h>
+#include <Adafruit_NeoPixel.h>
 
-#define DISPLAY_RESET 9
+
+
+//pin definitions
+#define DISPLAY_RESET 13
+#define MAIN_PUMP_OUT 12
+#define DOSING_PUMP_2 11
+#define DOSING_PUMP_1 10
+#define LED_STRIP_OUT 9
+#define AUTO_TOPOFF_OUT 8
+#define FLOAT_SWITCH_IN 7
+#define AUX_BTTN_IN 6
+#define ENCODER_SW_IN 5
+#define ENCODER_B_IN 4
+#define ENCODER_A_IN 3
+#define RGB_LED_DOUT 2
+
+#define RTC_READ_ADDR 0x51
+#define RTC_WRITE_ADDR 0x51
+#define RTC_SECODS_REG 0x02
+#define RTC_HOURS_REG 0x04
+
 #define DEBUG
 
 #define TOPLEVEL_MENU 1
@@ -15,14 +37,17 @@
 #define DOSE_PUMP_1_MENU 13
 #define DOSE_PUMP_2_MENU 14
 
-char parseSerialInput(void);  //gets user input from the keyboard
-char parseEncoderInput(void); //translates encoder pulses into menu commands
+char parseSerialInput(void);          //gets user input from the keyboard
+char parseEncoderInput(void);         //translates encoder pulses into menu commands
+uint8_t bcdToDec(uint8_t);            //converts the BCD format output of the RTC to decimal
+uint8_t decToBCD(uint8_t);            //converts the decimal time format to BCD to set the RTC
 
-void refreshDisplay(void);    //refreshes the display, this should be called every cycle
-void navigateMenu(char);      //parses navigation commands for the menu structure
+void refreshDisplay(void);            //refreshes the display, this should be called every cycle
+void navigateMenu(char);              //parses navigation commands for the menu structure
 void parseCursorPos(char,uint8_t, uint8_t);
 int changeVariable(char, uint32_t, uint16_t, uint16_t); // circularly increments or decrements a variable, with a set min and max
 
+void displayToplevelMenu(uint8_t);
 void displayStatusMenu(void);
 void displayPumpMenu(uint8_t);        //show top level pump menu
 void displayLightingMenu(uint8_t);    //show lighting settings menu
@@ -32,8 +57,10 @@ void displayMainPumpMenu(uint8_t);    //show the main pump settings menu
 void displayDosePump1Menu(uint8_t);   //show dosing pump 1 settings menu
 void displayDosePump2Menu(uint8_t);   //show dosign pump 2 settings menu
 
+void refreshDisplay(uint8_t,uint8_t); //refreshes the display, given inputs are current menu and cursor position
+
 void getTimeofDay(void);              //retreive the current time of day from the RTC
-void setTimeofDay(void);              //set the current time of day from the RTC
+void setTimeofDay(uint8_t, uint8_t);  //set the current time of day from the RTC
 
 void readEEPROMVariables(void);       //get any variables from memory that have been stored during a power outage
 void writeEEPROMVariables(void);      //set values of variables in memory to keep data in the event of a power outage
@@ -48,7 +75,7 @@ void deliverDose(uint8_t,uint16_t);   //delivers a dose of a specified volume to
 void calibratePH(void);               //calibrates the PH of the current solution
 
 char* getTimeString(uint16_t);        //returns a HH MM 24 hour time format string when given hours and minutes
-
+void printVars(void);                 //used for debug
 
 //DISPLAY OBJECT CONSTRUCTOR
 //SSD1305: Display controller
@@ -58,17 +85,28 @@ char* getTimeString(uint16_t);        //returns a HH MM 24 hour time format stri
 //U8G2_SSD1305_128X64_ADAFRUIT_1_HW_I2C(rotation, [reset [, clock, data]])
 U8G2_SSD1305_128X64_ADAFRUIT_2_HW_I2C display(U8G2_R0, DISPLAY_RESET);
 
+//neopixel(single)
+Adafruit_NeoPixel rgbLed = Adafruit_NeoPixel(1,RGB_LED_DOUT,NEO_GRB + NEO_KHZ800);
+
 //GLOBAL VARIABLES:
-uint16_t time_minutes = 720;  //maximum of 1440, represents the time of day in minutes
+uint16_t seconds = 0;         //time, seconds
+uint16_t minutes = 0;         //time, minutes
+uint16_t hours = 0;           //time, hours
+
+uint16_t time_minutes = 720;  //maximum of 1440, represents the time of day in minutes only
 uint16_t ph = 512;            //maximum of 1024. PH represented as 0->0, 14->1024
 uint16_t temperature = 512;   //temperature represented as an int
 
 //variables related to the encoder
-uint8_t a;
-uint8_t b;
-uint8_t aLast;
-uint8_t bLast;
-uint8_t button;
+uint8_t encoder_state;
+uint8_t encoder_last_state;
+uint8_t encoder_a;
+uint8_t encoder_b;
+uint8_t encoder_aLast;
+uint8_t encoder_bLast;
+uint8_t encoder_button;
+int8_t encoder_pulsectr = 0; //counts the pulses from the encoder to determine whether the command is up or down (encoder does two pulses per detent)
+uint8_t buttonPressed = 0;    //command to tell if button has been pressed by user
 
 //LIGHT variables
 uint8_t led_brightness = 100;
@@ -104,26 +142,91 @@ uint8_t menuLevel = 1;                  //used for menu navigation vertically
 uint8_t editingVariable = 0;            //used to keep track of navigation button context (edit a variable or change menu selection)
 uint8_t currentMenu = TOPLEVEL_MENU;    //for keeping track of the current menu that is being occupied
 char command = '\0';                    //command variable for parsing the user input to the controller
+char lastCommand = '\0';
 
 char stringBuffer[50];    //used as an intermediary for the sprintf function
 
+int8_t position = 0;  //test var for encoder position
+
+
+
+uint32_t loopCtr = 0;
+
+uint8_t i;
+int t;
+int deltat;
 
 void setup()
 {
+  Wire.begin();           //initialize I2C bus
   display.begin();        //start the display
   Serial.begin(9600);     //start serial port
+  refreshDisplay(currentMenu,cursor); //display the main screen
+  setTimeofDay(15,45);
+  rgbLed.begin();
+  rgbLed.setBrightness(1);
+  rgbLed.show();
 }
 
+//LOOP TIME BENCHMARKING:
+//navigateMenu takes approximately 125ms to update
 void loop()
 {
-  command = parseSerialInput();
-  navigateMenu(command);
 
-
+  lastCommand = command;
+  command = parseEncoderInput();
+  if(command)
+  {
+    Serial.print(command);
+    navigateMenu(command);
+    refreshDisplay(currentMenu,cursor);
+    getTimeofDay();
+    sprintf(stringBuffer,"hh:%i, mm:%i, ss:%i",hours, minutes, seconds);
+    Serial.println(stringBuffer);
+    loopCtr = 0;
+  }
   command = '\0';
+  loopCtr++;
+  if(loopCtr%1000)
+    getTimeofDay();
 }
 
 //FUNCTIONS:
+
+void getTimeofDay()
+{
+  Wire.beginTransmission(0x51); //begin a transmission with the RTC, move the register pointer to VL_seconds
+  Wire.write(0x02);
+  Wire.endTransmission();
+  Wire.requestFrom(0x51,3);            //request the first 3 bits from the RTC (seconds, minutes, and hours)
+  seconds = bcdToDec(Wire.read()&0b01111111);
+  minutes = bcdToDec(Wire.read()&0b01111111);
+  hours =   bcdToDec(Wire.read()&0b00111111);
+  time_minutes = 60*hours+minutes;
+
+}
+
+void setTimeofDay(uint8_t hours, uint8_t minutes)
+{
+  Wire.beginTransmission(RTC_WRITE_ADDR);
+  Wire.write(0x02);
+  Wire.write(decToBCD(0));        //we don't care about seconds
+  Wire.write(decToBCD(minutes));  //write minutes
+  Wire.write(decToBCD(hours));    //write hours
+  Wire.endTransmission();
+}
+
+uint8_t bcdToDec(uint8_t num)
+{
+  num = num/16*10+num%16;
+  return(num);
+}
+
+uint8_t decToBCD(uint8_t num)
+{
+  num= num/10*16+num%10;
+  return(num);
+}
 
 char parseSerialInput(void)     //parses the input at the serial monitor
 {
@@ -151,6 +254,71 @@ char parseSerialInput(void)     //parses the input at the serial monitor
   return(command);
 }
 
+char parseEncoderInput(void)
+{
+  char command = '\0';
+  encoder_last_state = encoder_state;
+  encoder_a = digitalRead(ENCODER_A_IN);        //read the state of the phases
+  encoder_b = digitalRead(ENCODER_B_IN);
+  encoder_state = (encoder_a<<1) + encoder_b;   //LSB of encoder_state is b, MSB is a
+  if(encoder_state != encoder_last_state)       //if there has been a change of state, then update according to which direction the encoder has been turned
+  {
+    if(encoder_last_state==1)
+    {
+      if(encoder_state==3)
+        encoder_pulsectr--;
+      if(encoder_state==0)
+        encoder_pulsectr++;
+    }
+
+    if(encoder_last_state==0)
+    {
+      if(encoder_state==1)
+        encoder_pulsectr--;
+      if(encoder_state==2)
+        encoder_pulsectr++;
+    }
+
+    if(encoder_last_state==2)
+    {
+      if(encoder_state==0)
+        encoder_pulsectr--;
+      if(encoder_state==3)
+        encoder_pulsectr++;
+    }
+
+    if(encoder_last_state==3)
+    {
+      if(encoder_state==2)
+        encoder_pulsectr--;
+      if(encoder_state==1)
+        encoder_pulsectr++;
+    }
+  }
+  if(encoder_pulsectr==2)         //since the encoder has two pulses per detent, we need to count two full pulses in either direction before issuing a command to the system
+  {
+    command = 'U';
+    encoder_pulsectr = 0;
+  }
+  if(encoder_pulsectr==-2)        //-2 for the other direction
+  {
+    command='D';
+    encoder_pulsectr = 0;
+  }
+
+  if(digitalRead(ENCODER_SW_IN))  //if the button has been pressed, debounce, and register a button press as the command. Button press will override a cursor movement
+  {
+    delay(200);
+    command = 'E';
+  }
+  return(command);
+}
+
+void printVars(void)
+{
+  sprintf(stringBuffer,"A=%i,B=%i,SW=%i,Ap=%i,Bp=%i",encoder_a,encoder_b,encoder_button,encoder_aLast,encoder_bLast);
+  Serial.println(stringBuffer);
+}
 
 char* getTimeString(uint16_t timeinminutes)  //returns a HH MM 24 hour time format string when time in minutes (0-1440)
 {
@@ -250,9 +418,43 @@ void writeEEPROMVariables()
 
 }
 
+void refreshDisplay(uint8_t current_menu, uint8_t cursorPos)
+{
+  switch(current_menu)
+  {
+    case TOPLEVEL_MENU:
+      displayToplevelMenu(cursorPos);
+    break;
+    case PUMP_SETTINGS_MENU:
+      displayPumpMenu(cursorPos);
+    break;
+    case LIGHTING_MENU:
+      displayLightingMenu(cursorPos);
+    break;
+    case PH_MENU:
+      displayPHMenu(cursorPos);
+    break;
+    case CLOCK_MENU:
+      displayClockMenu(cursorPos);
+    break;
+    case MAIN_PUMP_MENU:
+      displayMainPumpMenu(cursorPos);
+    break;
+    case AUTO_TOPOFF_MENU:
+      displayMainPumpMenu(cursorPos);
+    break;
+    case DOSE_PUMP_1_MENU:
+      displayDosePump1Menu(cursorPos);
+    break;
+    case DOSE_PUMP_2_MENU:
+      displayDosePump2Menu(cursorPos);
+    break;
+  }
+}
+
 void navigateMenu(char command) //master menu navigation function
 {
-  uint8_t buttonPressed = 0;    //command to tell if button has been pressed by user
+  buttonPressed = 0;    //command to tell if button has been pressed by user
 
   if(command=='E')  //command was enter
   {
@@ -268,7 +470,6 @@ void navigateMenu(char command) //master menu navigation function
         displayStatusMenu();
       break;
       case 1:                     //pump menu is being hovered over
-        displayPumpMenu(254);
         if(buttonPressed)
         {
           currentMenu = PUMP_SETTINGS_MENU; //if button is pressed, enter the pump settings menu
@@ -276,7 +477,6 @@ void navigateMenu(char command) //master menu navigation function
         }
       break;
       case 2:                     //Lighting Menu is being hovered over
-        displayLightingMenu(254);
         if(buttonPressed)
         {
           currentMenu = LIGHTING_MENU; //if button is pressed, enter the lighting menu
@@ -284,7 +484,6 @@ void navigateMenu(char command) //master menu navigation function
         }
       break;
       case 3:                     //PH menu is being hovered over
-        displayPHMenu(254);
         if(buttonPressed)
         {
           currentMenu = PH_MENU;  //if button is pressed, enter the PH menu
@@ -292,7 +491,6 @@ void navigateMenu(char command) //master menu navigation function
         }
       break;
       case 4:                     //Clock menu is being hovered over
-        displayClockMenu(254);
         if(buttonPressed)
         {
           currentMenu = CLOCK_MENU;  //if button is pressed, enter the clock settings menu
@@ -306,7 +504,6 @@ void navigateMenu(char command) //master menu navigation function
   if(currentMenu == PUMP_SETTINGS_MENU) //if the current menu is the pump settings menu
   {
     parseCursorPos(command,0,5);  //rotate cursor through 5 positions
-    displayPumpMenu(cursor);
     switch(cursor)
     {
       case 0: //hovering over Main pump settings menu
@@ -353,7 +550,6 @@ void navigateMenu(char command) //master menu navigation function
   {
     if(!editingVariable)            //if we are not currently editing a variable, move the cursor if given the command
       parseCursorPos(command,0,5);
-    displayLightingMenu(cursor);    //display the lighting menu for the current position
     switch(cursor)
     {
       case 0:                       // hovering over the LED brightness button
@@ -394,7 +590,6 @@ void navigateMenu(char command) //master menu navigation function
   {
     if(!editingVariable)
       parseCursorPos(command,0,3);
-    displayPHMenu(cursor);
     switch(cursor)
     {
       case 0:
@@ -415,7 +610,6 @@ void navigateMenu(char command) //master menu navigation function
   {
     if(!editingVariable)
       parseCursorPos(command,0,2);
-    displayClockMenu(cursor);
     switch(cursor)
     {
       case 0:
@@ -434,7 +628,6 @@ void navigateMenu(char command) //master menu navigation function
   {
     if(!editingVariable)
       parseCursorPos(command,0,4);
-    displayMainPumpMenu(cursor);
     switch(cursor)
     {
       case 0:
@@ -468,7 +661,6 @@ void navigateMenu(char command) //master menu navigation function
   if(currentMenu == AUTO_TOPOFF_MENU) //STILL NEEDS TO BE IMPLEMENTED
   {
     parseCursorPos(command,0,2);
-    displayMainPumpMenu(cursor);
     switch(cursor)
     {
       case 0:
@@ -493,7 +685,6 @@ void navigateMenu(char command) //master menu navigation function
   {
     if(!editingVariable)
       parseCursorPos(command,0,5);
-    displayDosePump1Menu(cursor);
     switch(cursor)
     {
       case 0:
@@ -526,11 +717,11 @@ void navigateMenu(char command) //master menu navigation function
     }
   }
 
+
   if(currentMenu == DOSE_PUMP_2_MENU)
   {
     if(!editingVariable)
       parseCursorPos(command,0,5);
-    displayDosePump2Menu(cursor);
     switch(cursor)
     {
       case 0:
@@ -562,7 +753,28 @@ void navigateMenu(char command) //master menu navigation function
       break;
     }
   }
+}
 
+void displayToplevelMenu(uint8_t cursorPos)
+{
+  switch(cursorPos)
+  {
+    case 0:                     //status menu is being hovered over
+      displayStatusMenu();
+    break;
+    case 1:                     //pump menu is being hovered over
+      displayPumpMenu(254);
+    break;
+    case 2:                     //Lighting Menu is being hovered over
+      displayLightingMenu(254);
+    break;
+    case 3:                     //PH menu is being hovered over
+      displayPHMenu(254);
+    break;
+    case 4:                     //Clock menu is being hovered over
+      displayClockMenu(254);
+    break;
+  }
 }
 
 void displayStatusMenu() //4 cursor positions none, 1,2,3, and back.
@@ -897,7 +1109,7 @@ void displayDosePump1Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
     display.drawStr(optx,opty+optyspace,"Interval: ");
     sprintf(stringBuffer,"%i",dose1_interval);
     display.drawStr(optx+48,opty+optyspace,stringBuffer);
-    display.drawStr(optx+58,opty+optyspace,"mins");
+    display.drawStr(optx+68,opty+optyspace,"mins");
     display.drawStr(optx,opty+2*optyspace,"Status:");
     display.drawStr(optx+55,opty+2*optyspace,state);
     display.drawStr(optx,opty+3*optyspace,"Force Dose");
@@ -961,7 +1173,7 @@ void displayDosePump2Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
     display.drawStr(optx,opty+optyspace,"Interval: ");
     sprintf(stringBuffer,"%i",dose2_interval);
     display.drawStr(optx+48,opty+optyspace,stringBuffer);
-    display.drawStr(optx+58,opty+optyspace,"mins");
+    display.drawStr(optx+68,opty+optyspace,"mins");
     display.drawStr(optx,opty+2*optyspace,"Status:");
     display.drawStr(optx+55,opty+2*optyspace,state);
     display.drawStr(optx,opty+3*optyspace,"Force Dose");
