@@ -3,8 +3,8 @@
 #include <string.h>
 #include <Wire.h>
 #include <Adafruit_NeoPixel.h>
-
-
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 //pin definitions
 #define DISPLAY_RESET 13
@@ -19,6 +19,8 @@
 #define ENCODER_B_IN 4
 #define ENCODER_A_IN 3
 #define RGB_LED_DOUT 2
+#define TEMP_SENSE_IN A1
+#define PH_IN A0
 
 #define RTC_READ_ADDR 0x51
 #define RTC_WRITE_ADDR 0x51
@@ -36,6 +38,8 @@
 #define AUTO_TOPOFF_MENU 12
 #define DOSE_PUMP_1_MENU 13
 #define DOSE_PUMP_2_MENU 14
+
+#define LOOP_COUNT_1_SECOND 27000     //approximate number of main loop cycles for one second
 
 char parseSerialInput(void);          //gets user input from the keyboard
 char parseEncoderInput(void);         //translates encoder pulses into menu commands
@@ -58,9 +62,16 @@ void displayDosePump1Menu(uint8_t);   //show dosing pump 1 settings menu
 void displayDosePump2Menu(uint8_t);   //show dosign pump 2 settings menu
 
 void refreshDisplay(uint8_t,uint8_t); //refreshes the display, given inputs are current menu and cursor position
+void periodicRefresh(void);           //updates variables (ph, time, temperature), and refreshes the display
 
 void getTimeofDay(void);              //retreive the current time of day from the RTC
 void setTimeofDay(uint8_t, uint8_t);  //set the current time of day from the RTC
+
+void readTemperature(void);           //reads the temperature from the DS18B20, stores it in two 8-bit variables, one for the integer part, and one for one decimal place
+void readPH(void);                    //reads the current PH from the sensor, stores it in two 8-bit variables, one for the integer part, and one for one decimal place
+
+
+void setupIO(void);                   //pinMode stuff
 
 void readEEPROMVariables(void);       //get any variables from memory that have been stored during a power outage
 void writeEEPROMVariables(void);      //set values of variables in memory to keep data in the event of a power outage
@@ -88,14 +99,22 @@ U8G2_SSD1305_128X64_ADAFRUIT_2_HW_I2C display(U8G2_R0, DISPLAY_RESET);
 //neopixel(single)
 Adafruit_NeoPixel rgbLed = Adafruit_NeoPixel(1,RGB_LED_DOUT,NEO_GRB + NEO_KHZ800);
 
+//temperature sensor and onewire initialize
+OneWire oneWire(A1);
+DallasTemperature tempSensor(&oneWire);
+
 //GLOBAL VARIABLES:
 uint16_t seconds = 0;         //time, seconds
 uint16_t minutes = 0;         //time, minutes
 uint16_t hours = 0;           //time, hours
 
 uint16_t time_minutes = 720;  //maximum of 1440, represents the time of day in minutes only
-uint16_t ph = 512;            //maximum of 1024. PH represented as 0->0, 14->1024
 uint16_t temperature = 512;   //temperature represented as an int
+uint8_t temperature_int = 0;  //the integer part of the temperature variable
+uint8_t temperature_frac = 0; //the fractional part of the temperature variable
+
+uint16_t ph = 0;            //maximum of 1024. PH represented as 0->0, 14->1024
+uint8_t ph_zero = 0;
 
 //variables related to the encoder
 uint8_t encoder_state;
@@ -115,8 +134,8 @@ uint16_t led_off_time = 1080; //time of day that the LED strip turns off
 uint8_t led_enabled = 1;      //LED strip enable
 
 //Main Pump Variables:
-uint8_t main_pump_on_interval = 10;   //ON-time of the main pump in minutes
-uint8_t main_pump_off_interval = 45;  //OFF-time of the main pump in minutes
+uint8_t main_pump_on_interval = 1;   //ON-time of the main pump in minutes
+uint8_t main_pump_off_interval = 1;  //OFF-time of the main pump in minutes
 uint8_t main_pump_enabled = 1;        //is the main pump enabled?
 uint16_t main_pump_last_time;         //records last time that the pump state changed
 uint8_t pumpState = 0;                //current pump state (on/off)
@@ -148,9 +167,7 @@ char stringBuffer[50];    //used as an intermediary for the sprintf function
 
 int8_t position = 0;  //test var for encoder position
 
-
-
-uint32_t loopCtr = 0;
+uint64_t loopCtr = 0;
 
 uint8_t i;
 int t;
@@ -158,6 +175,7 @@ int deltat;
 
 void setup()
 {
+
   Wire.begin();           //initialize I2C bus
   display.begin();        //start the display
   Serial.begin(9600);     //start serial port
@@ -166,13 +184,14 @@ void setup()
   rgbLed.begin();
   rgbLed.setBrightness(1);
   rgbLed.show();
+  setupIO();
+  main_pump_last_time = time_minutes;
 }
 
 //LOOP TIME BENCHMARKING:
 //navigateMenu takes approximately 125ms to update
 void loop()
 {
-
   lastCommand = command;
   command = parseEncoderInput();
   if(command)
@@ -180,18 +199,47 @@ void loop()
     Serial.print(command);
     navigateMenu(command);
     refreshDisplay(currentMenu,cursor);
-    getTimeofDay();
-    sprintf(stringBuffer,"hh:%i, mm:%i, ss:%i",hours, minutes, seconds);
-    Serial.println(stringBuffer);
+    updateLights();
     loopCtr = 0;
   }
   command = '\0';
+
+  if(loopCtr>=(uint64_t)2*LOOP_COUNT_1_SECOND) //updates main variables and pump status every 5 minutes
+  {
+    periodicRefresh();
+    loopCtr = 0;
+  }
+
   loopCtr++;
-  if(loopCtr%1000)
-    getTimeofDay();
 }
 
-//FUNCTIONS:
+//FUNCTIONS (most of these use global variables, I would like to clean that up in the future if given time)
+
+
+void periodicRefresh() //refreshes the display, reads variables from the sensors (PH/)
+{
+  readTemperature();
+  readPH();
+  getTimeofDay();
+  refreshDisplay(currentMenu,cursor);
+  updateLights();
+  updateMainPump();
+}
+
+//gets the temperature and stores it in the corresponding global variables (up to the first decimal place)
+void readTemperature(void)
+{
+  tempSensor.requestTemperatures();
+  float floatTemp = tempSensor.getTempCByIndex(0);
+  temperature_int = (uint8_t)floor(floatTemp);
+  temperature_frac = (uint8_t)floor(10*(floatTemp-temperature_int)); //get only the first decimal place
+}
+
+void readPH(void)
+{
+  uint16_t ph_raw = analogRead(PH_IN);
+  ph = ph_raw;
+}
 
 void getTimeofDay()
 {
@@ -203,7 +251,6 @@ void getTimeofDay()
   minutes = bcdToDec(Wire.read()&0b01111111);
   hours =   bcdToDec(Wire.read()&0b00111111);
   time_minutes = 60*hours+minutes;
-
 }
 
 void setTimeofDay(uint8_t hours, uint8_t minutes)
@@ -215,6 +262,66 @@ void setTimeofDay(uint8_t hours, uint8_t minutes)
   Wire.write(decToBCD(hours));    //write hours
   Wire.endTransmission();
 }
+
+void updateLights()
+{
+  if((time_minutes >= led_on_time)&&led_enabled)
+  {
+    analogWrite(LED_STRIP_OUT,map(led_brightness,0,100,0,255));
+  }
+  if((time_minutes >= led_off_time)||!led_enabled)
+  {
+    analogWrite(LED_STRIP_OUT,0);
+  }
+
+}
+
+void updateMainPump()
+{
+  if(pumpState) //if pump is currently on
+  {
+    if(time_minutes - main_pump_last_time >= main_pump_on_interval) //if the elapsed interval has passed
+    {
+      pumpState = 0;
+      main_pump_last_time = time_minutes;
+    }
+  }
+  else if(!pumpState) //if pump is currently OFF
+  {
+    if((time_minutes - main_pump_last_time >= main_pump_off_interval)) //if the elapsed off interval has passed, and the main pump is enabled
+    {
+      pumpState = 1;
+      main_pump_last_time = time_minutes;
+    }
+  }
+  if(main_pump_enabled)
+    digitalWrite(MAIN_PUMP_OUT,pumpState);
+  else
+    digitalWrite(MAIN_PUMP_OUT,0);
+}
+
+void deliverDose(uint8_t pump, uint16_t volume)   //delivers a dose of the specified volume to the system
+{
+  if(pump==1)
+  {
+    //deliver dose
+  }
+  if(pump==2)
+  {
+    //deliver dose
+  }
+}
+
+void readEEPROMVariables()
+{
+
+}
+
+void writeEEPROMVariables()
+{
+
+}
+
 
 uint8_t bcdToDec(uint8_t num)
 {
@@ -252,6 +359,15 @@ char parseSerialInput(void)     //parses the input at the serial monitor
   }
   //Serial.print("\n");
   return(command);
+}
+
+void setupIO(void)
+{
+  pinMode(MAIN_PUMP_OUT,OUTPUT);
+  pinMode(DOSING_PUMP_1,OUTPUT);
+  pinMode(DOSING_PUMP_2,OUTPUT);
+  pinMode(AUTO_TOPOFF_OUT,OUTPUT);
+  pinMode(FLOAT_SWITCH_IN,INPUT);
 }
 
 char parseEncoderInput(void)
@@ -362,61 +478,6 @@ int changeVariable(char command, uint32_t variable, uint16_t min, uint16_t max) 
   return(variable);
 }
 
-void updateLights()
-{
-  if(time_minutes <= led_on_time)
-  {
-    //put analog stuff here
-  }
-  if(time_minutes >= led_off_time)
-  {
-    //put analog stuff here
-  }
-
-}
-
-void updateMainPump()
-{
-  if(pumpState) //if pump is currently on
-  {
-    if(time_minutes - main_pump_last_time >= main_pump_on_interval) //if the elapsed interval has passed
-    {
-      pumpState = 0;
-      main_pump_last_time = time_minutes;
-    }
-  }
-  else if(!pumpState) //if pump is currently OFF
-  {
-    if(time_minutes - main_pump_last_time >= main_pump_off_interval) //if the elapsed off interval has passed
-    {
-      pumpState = 1;
-      main_pump_last_time = time_minutes;
-    }
-  }
-  //turn on output pin here
-}
-
-void deliverDose(uint8_t pump, uint16_t volume)   //delivers a dose of the specified volume to the system
-{
-  if(pump==1)
-  {
-    //deliver dose
-  }
-  if(pump==2)
-  {
-    //deliver dose
-  }
-}
-
-void readEEPROMVariables()
-{
-
-}
-
-void writeEEPROMVariables()
-{
-
-}
 
 void refreshDisplay(uint8_t current_menu, uint8_t cursorPos)
 {
@@ -613,6 +674,15 @@ void navigateMenu(char command) //master menu navigation function
     switch(cursor)
     {
       case 0:
+        if(buttonPressed)           //if the button is pressed, enter or exit editing mode
+          editingVariable=!editingVariable;
+        if(editingVariable)         //if we are in editing mode, change the led_off_time variable
+        {
+          time_minutes = changeVariable(command,time_minutes,0,1440);
+          minutes = time_minutes%60;
+          hours = time_minutes/60;
+          setTimeofDay(hours,minutes);
+        }
       break;
       case 1:
         if(buttonPressed)
@@ -634,19 +704,26 @@ void navigateMenu(char command) //master menu navigation function
         if(buttonPressed)
           editingVariable=!editingVariable;
         if(editingVariable)
-          main_pump_on_interval = changeVariable(command,main_pump_on_interval,0,255);
+        {
+          main_pump_on_interval = changeVariable(command,main_pump_on_interval,1,255);
+        }
       break;
       case 1:
         if(buttonPressed)
           editingVariable=!editingVariable;
         if(editingVariable)
-          main_pump_off_interval = changeVariable(command,main_pump_off_interval,0,255);
+        {
+          main_pump_off_interval = changeVariable(command,main_pump_off_interval,1,255);
+        }
       break;
       case 2:
         if(buttonPressed)
           editingVariable=!editingVariable;
         if(editingVariable)
+        {
           main_pump_enabled = changeVariable(command,main_pump_enabled,0,1);
+          updateMainPump();
+        }
       break;
       case 3:
         if(buttonPressed)
@@ -781,8 +858,6 @@ void displayStatusMenu() //4 cursor positions none, 1,2,3, and back.
 {
   char menuTitle[] = "Grow Wave V1.0";
   //variables to be displayed
-  uint8_t tempint = 22;
-  uint8_t tempfrac = 2;
   uint8_t phint = 6;
   uint8_t phfrac = 3;
 
@@ -806,7 +881,7 @@ void displayStatusMenu() //4 cursor positions none, 1,2,3, and back.
     getTimeString(time_minutes);
     display.drawStr(optx+63,opty,stringBuffer);
     display.drawStr(optx,opty+optyspace,"Temperature: ");
-    sprintf(stringBuffer,"%i.%i C",tempint,tempfrac);
+    sprintf(stringBuffer,"%i.%i C",temperature_int,temperature_frac);
     display.drawStr(optx+63,opty+optyspace,stringBuffer);
     display.drawStr(optx,opty+2*optyspace,"Current PH: ");
     sprintf(stringBuffer,"%i.%i",phint,phfrac);
