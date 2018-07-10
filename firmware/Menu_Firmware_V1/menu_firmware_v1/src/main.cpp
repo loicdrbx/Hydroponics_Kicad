@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 #include <U8g2lib.h>
 #include <string.h>
 #include <Wire.h>
@@ -40,6 +41,8 @@
 #define DOSE_PUMP_2_MENU 14
 
 #define LOOP_COUNT_1_SECOND 27000     //approximate number of main loop cycles for one second
+#define REFERENCE_PH 7
+#define DOSE_VOLUME_TEST 10
 
 char parseSerialInput(void);          //gets user input from the keyboard
 char parseEncoderInput(void);         //translates encoder pulses into menu commands
@@ -80,6 +83,8 @@ void updateLights(void);              //turns the lights on or off, changes Brig
 void updateMainPump(void);            //turns the main pump on or off based on the current time_minutes
 void updateDose1(void);               //delivers a dose to the system if one is required
 void updateDose2(void);               //delivers a dose to the system if one is required
+void setupDoses(void);                //sets the remaining dose volume for the day at the start of every day
+void manualDose1(uint16_t);            //manually dose a certain volume
 
 void deliverDose(uint8_t,uint16_t);   //delivers a dose of a specified volume to a specified pump
 
@@ -114,7 +119,10 @@ uint8_t temperature_int = 0;  //the integer part of the temperature variable
 uint8_t temperature_frac = 0; //the fractional part of the temperature variable
 
 uint16_t ph = 0;            //maximum of 1024. PH represented as 0->0, 14->1024
-uint8_t ph_zero = 0;
+uint8_t ph_int = 0;
+uint8_t ph_frac = 0;
+int16_t ph_offset = 0;          //offset calibration value for the output offset voltage of the amplifier
+uint8_t cal_solution_ph = 7;    //PH of the calibration solution
 
 //variables related to the encoder
 uint8_t encoder_state;
@@ -143,17 +151,21 @@ uint8_t pumpState = 0;                //current pump state (on/off)
 //auto topoff pump:
 uint8_t auto_topoff_enabled = 1;
 
+uint8_t doses_have_been_set = 0;      //have the doses for the day been scheduled yet?
+
 //dose pump 1 settings:
-uint16_t dose1_volume = 1300; //total volume to be dosed for the first dosing Pumpuint16
+uint16_t dose1_volume = 0; //total volume to be dosed for the first dosing Pumpuint16
 uint16_t dose1_remaining;     //total remaining volume to be dosed
-uint8_t dose1_interval = 60;  //time in minutes between doses
+uint8_t dose1_interval = 5;   //time in minutes between doses
 uint8_t dose1_enabled = 1;    //is dosing pump 1 enabled?
+uint16_t dose1_last_time;     //when was the last dose delivered
 
 //dose pump 2 settings:
-uint16_t dose2_volume = 1300; //total volume to be dosed for the first dosing Pump
+uint16_t dose2_volume = 0; //total volume to be dosed for the first dosing Pump
 uint16_t dose2_remaining;     //total remaining volume to be dosed
 uint8_t dose2_interval = 60;  //time in minutes between doses
 uint8_t dose2_enabled = 1;    //is dosing pump 1 enabled?
+uint16_t dose2_last_time;     //when was the last dose delivered
 
 //Menu navigation global variables:
 uint8_t cursor = 0;                     //used for menu navigation horizontally
@@ -180,7 +192,7 @@ void setup()
   display.begin();        //start the display
   Serial.begin(9600);     //start serial port
   refreshDisplay(currentMenu,cursor); //display the main screen
-  setTimeofDay(15,45);
+  setTimeofDay(0,0);                                              //for now...
   rgbLed.begin();
   rgbLed.setBrightness(1);
   rgbLed.show();
@@ -204,12 +216,11 @@ void loop()
   }
   command = '\0';
 
-  if(loopCtr>=(uint64_t)2*LOOP_COUNT_1_SECOND) //updates main variables and pump status every 5 minutes
+  if(loopCtr>=(uint64_t)2*LOOP_COUNT_1_SECOND) //updates main variables and pump status every 2 seconds
   {
     periodicRefresh();
     loopCtr = 0;
   }
-
   loopCtr++;
 }
 
@@ -218,12 +229,17 @@ void loop()
 
 void periodicRefresh() //refreshes the display, reads variables from the sensors (PH/)
 {
+  if(time_minutes < 2) //if it's a new day, reset the remaining dose volume for the pumps
+  {
+    setupDoses();
+  }
   readTemperature();
   readPH();
   getTimeofDay();
   refreshDisplay(currentMenu,cursor);
   updateLights();
   updateMainPump();
+  updateDose1();
 }
 
 //gets the temperature and stores it in the corresponding global variables (up to the first decimal place)
@@ -235,10 +251,21 @@ void readTemperature(void)
   temperature_frac = (uint8_t)floor(10*(floatTemp-temperature_int)); //get only the first decimal place
 }
 
-void readPH(void)
+void readPH(void) //read the PH values, and map the output from 0-1024, to one integer place, and one decimal place
 {
   uint16_t ph_raw = analogRead(PH_IN);
-  ph = ph_raw;
+  ph_raw = ph_raw + ph_offset;
+  //dividing 1024 into 14 sections (ph goes from 0 to 14)
+  int16_t vprobe = map(ph_raw,0,1023,-2500,2500);
+  float ph_float = REFERENCE_PH + ((float)(-vprobe)*0.01708389);
+  ph_int = (uint8_t)floor(ph_float);
+  ph_frac = (uint8_t)floor(10*(ph_float-ph_int)); //get only the first decimal place
+}
+
+void calibratePH(void)
+{
+  uint16_t raw_input = analogRead(PH_IN); //the input voltage should be exactly zero for a PH of 7
+  ph_offset = 512-raw_input;    //thus, any value that we get here will be the offset that we need to null
 }
 
 void getTimeofDay()
@@ -300,15 +327,71 @@ void updateMainPump()
     digitalWrite(MAIN_PUMP_OUT,0);
 }
 
-void deliverDose(uint8_t pump, uint16_t volume)   //delivers a dose of the specified volume to the system
+void setupDoses(void)                               //this function only runs once per day, and it sets up the remaining dose volume for the dosing pumps
 {
-  if(pump==1)
+  if(!doses_have_been_set)
   {
-    //deliver dose
+    dose1_remaining = dose1_volume;
+    dose2_remaining = dose2_volume;
+    doses_have_been_set = 1;
   }
-  if(pump==2)
+}
+
+void updateDose1(void)
+{
+  uint16_t num_doses = 1440/dose1_interval;              //calculate number of doses needed based on the dosing interval and 1440 minutes in a day
+  uint16_t volume_per_dose = dose1_volume/num_doses;    //calculate the volume per dose based on total volume and number of doses
+
+  if(!(time_minutes%dose1_interval)&&(time_minutes>0)&&(time_minutes!=dose1_last_time))                    //if the time lines up with one of the scheduled dosing times, then:
   {
-    //deliver dose
+    deliverDose(1,volume_per_dose);
+    dose1_remaining = dose1_remaining-volume_per_dose;  //subtract the dosed volume from the total remaining to be dosed
+    dose1_last_time = time_minutes;
+    Serial.print("Dosing, time=");
+    Serial.print(time_minutes);
+    Serial.print(" volume:");
+    Serial.print(volume_per_dose);
+    Serial.print(" remaining:");
+    Serial.println(dose1_remaining);
+  }
+
+  if((time_minutes > 1435)&&dose1_remaining>0)                               //if the full dose has not been delivered by 11:55, dose the remainder for the day
+  {
+    deliverDose(1,dose1_remaining);
+    dose1_remaining = 0;
+  }
+}
+
+void manualDose1(uint16_t volume)
+{
+  uint16_t scaleNum = 900;
+  uint8_t scaleDen = 1;
+  uint16_t doseTime = (volume * scaleNum)/scaleDen;
+  digitalWrite(DOSING_PUMP_1,1);
+  delay(doseTime);
+  digitalWrite(DOSING_PUMP_1,0);
+}
+
+void updateDose2(void)
+{
+ //fill this in later
+}
+
+void deliverDose(uint8_t pump, uint16_t volume)
+{
+
+  if(pump==1&&dose1_enabled)
+  {
+    digitalWrite(DOSING_PUMP_1,1);
+    delay(250);
+    digitalWrite(DOSING_PUMP_1,0);
+  }
+
+  if(pump==2&&dose2_enabled)
+  {
+    digitalWrite(DOSING_PUMP_2,1);
+    delay(250);
+    digitalWrite(DOSING_PUMP_2,0);
   }
 }
 
@@ -656,6 +739,10 @@ void navigateMenu(char command) //master menu navigation function
       case 0:
       break;
       case 1:
+      if(buttonPressed)
+      {
+        calibratePH();
+      }
       break;
       case 2:
         if(buttonPressed)
@@ -783,6 +870,10 @@ void navigateMenu(char command) //master menu navigation function
           dose1_enabled = changeVariable(command,dose1_enabled,0,1);
       break;
       case 3:
+      if(buttonPressed)
+        {
+          manualDose1(DOSE_VOLUME_TEST);
+        }
       break;
       case 4:
         if(buttonPressed)
@@ -858,8 +949,6 @@ void displayStatusMenu() //4 cursor positions none, 1,2,3, and back.
 {
   char menuTitle[] = "Grow Wave V1.0";
   //variables to be displayed
-  uint8_t phint = 6;
-  uint8_t phfrac = 3;
 
   //graphics position data
   //uint8_t cursorPos = 0;
@@ -884,7 +973,7 @@ void displayStatusMenu() //4 cursor positions none, 1,2,3, and back.
     sprintf(stringBuffer,"%i.%i C",temperature_int,temperature_frac);
     display.drawStr(optx+63,opty+optyspace,stringBuffer);
     display.drawStr(optx,opty+2*optyspace,"Current PH: ");
-    sprintf(stringBuffer,"%i.%i",phint,phfrac);
+    sprintf(stringBuffer,"%i.%i",ph_int,ph_frac);
     display.drawStr(optx+63,opty+2*optyspace,stringBuffer);
     //display.drawStr(backx,backy,"Back");            //draw the back button (not needed for this menu context)
     //display.setDrawColor(2);
@@ -1068,7 +1157,7 @@ void displayPHMenu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, and back
     display.drawStr(15,10,menuTitle);
     display.setFont(u8g2_font_profont10_mr); //draw the item menus
     display.drawStr(optx,opty,"Current PH:");
-    sprintf(stringBuffer,"%i",ph);
+    sprintf(stringBuffer,"%i.%i",ph_int,ph_frac);
     display.drawStr(optx+60,opty,stringBuffer);
     display.drawStr(optx,opty+optyspace,"Calibrate Sensor");
 

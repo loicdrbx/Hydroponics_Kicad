@@ -2848,4 +2848,6 @@ $EndComp
 Connection ~ 8500 1650
 Text Notes 8000 2050 0    60   ~ 0
 TODO:\nConnect this to ground...\n
+Text Notes 2450 7150 0    60   ~ 0
+display address is 0x3C
 $EndSCHEMATC
