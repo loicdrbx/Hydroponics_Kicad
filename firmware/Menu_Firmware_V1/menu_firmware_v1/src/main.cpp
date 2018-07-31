@@ -7,6 +7,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <avr/pgmspace.h>
+#include <math.h>
 
 
 //pin definitions
@@ -45,7 +46,7 @@
 
 #define LOOP_COUNT_1_SECOND 27000     //approximate number of main loop cycles for one second
 #define REFERENCE_PH 7
-#define DOSE_VOLUME_TEST 3000            //in 1/5? of a milliliter
+#define DOSE_VOLUME_TEST 100            //in 1/10? of a milliliter
 
 #define HOURS_IN_WEEK 168
 #define MINUTES_IN_WEEK 10080
@@ -237,7 +238,7 @@ void loop()
   debug();
   if(command)
   {
-    Serial.print(command);
+    //Serial.print(command);
     navigateMenu(command);
     refreshDisplay(currentMenu,cursor);
     updateLights();
@@ -320,8 +321,8 @@ void getTimeofDay()
     minutes_ctr2++;
   }
   time_minutes = 60*hours + minutes;
-  sprintf(stringBuffer,"Minutes1: %i, Interval1: %i",minutes_ctr1,dose1_interval);
-  Serial.println(stringBuffer);
+  //sprintf(stringBuffer,"Minutes1: %i, Interval1: %i",minutes_ctr1,dose1_interval);
+  //Serial.println(stringBuffer);
 
 }
 
@@ -353,7 +354,6 @@ void updateLights()
   {
     analogWrite(LED_STRIP_OUT,0);
   }
-
 }
 
 void updateMainPump()
@@ -382,55 +382,102 @@ void updateMainPump()
 
 void updateDose1(void)
 {
-  Serial.print("checking ");
+  //Serial.print("checking ");
   if(minutes_ctr1 == dose1_interval)
   {
     deliverDose(1,dose1_vol_per_dose);
     minutes_ctr1 = 0;
-    Serial.print("Dosing... ");
+    #ifdef DEBUG
+      Serial.print("Dosing:  ");
+      Serial.print(dose1_vol_per_dose);
+      Serial.print("Time: ");
+      getTimeString(time_minutes);
+      Serial.print(stringBuffer);
+      Serial.print("Interval: ");
+      Serial.print(dose1_interval);
+    #endif
   }
 }
+
 
 void updateDose1Interval(void)
 {
-  uint8_t valid_combination = 0;
-  float error = 100;          //error between ideal dose flow rate and actual dose flow rate
-  float doseVolume;       //volume per dose, exact
-  uint16_t numDoses;      //number of doses per week
-  dose1_interval = 0;         //interval between doses, in minutes, start at 0
-  //Serial.println("updating dose1 interval");
-  while(!valid_combination)   //while a valid combination has not been found, keep looping
+  if(dose1_volume <=70 )
   {
-    dose1_interval++;                             //start at the lowest dose interval and increment
-    while(MINUTES_IN_WEEK%dose1_interval)         //only use intervals that can evenly be divided into a full week (10080 minutes)
-      dose1_interval++;                           //if the incremented interval is not a factor of 10080, increment again until it is
-    //Serial.println(dose1_interval);
-    numDoses = MINUTES_IN_WEEK/dose1_interval;    //the number of doses per week will be equal to 10080/the interval;
-    doseVolume = (float)dose1_volume/numDoses;    //the ideal exact volume per dose will be the total volume divided by the number of doses
-    doseVolume = 10*doseVolume;                   //we can only dose to 0.1ml of precision, so we need to remove everything after the tenths decimal place
-    doseVolume = (int)doseVolume;               //round to the nearest 0.1
-    doseVolume = (float)doseVolume/10;            //divide back down
-    error = (float)dose1_volume - (float)(doseVolume*numDoses); //calculate the deviation from the ideal dose rate (in ml/week)
-    if(error<0.01&&doseVolume>0.999)              //if the dose volume is above the minimum dose volume (1ml), and the error is below our threshold (0.01ml)
-    {
-      valid_combination = 1;                      //then we have settled on a valid combination
-      dose1_vol_per_dose = (int)doseVolume*10;
-      //Serial.println("valid combination found");
-      sprintf(stringBuffer,"Dose1: %i, Interval1: %i, Num1: %i",dose1_vol_per_dose,dose1_interval,numDoses);
-      Serial.println(stringBuffer);
-    }
+    dose1_interval = 1440; //24 hours
   }
+  if(dose1_volume>70 && dose1_volume<=80)
+  {
+    dose1_interval = 1260; //21 hours
+  }
+  if(dose1_volume>80 && dose1_volume<=120)
+  {
+    dose1_interval = 840;  //14 hours
+  }
+  if(dose1_volume>120 && dose1_volume <=140)
+  {
+    dose1_interval = 720;  //12 hours
+  }
+  if(dose1_volume>140 && dose1_volume<=210)
+  {
+    dose1_interval = 480; //8 hours
+  }
+  if(dose1_volume>210 && dose1_volume<=240)
+  {
+    dose1_interval = 420; //7 hours
+  }
+  if(dose1_volume>240 && dose1_volume<=280)
+  {
+    dose1_interval = 360; //6 hours
+  }
+  if(dose1_volume>280 && dose1_volume<=420)
+  {
+    dose1_interval = 240; //4 hours
+  }
+  if(dose1_volume>420 && dose1_volume<=560)
+  {
+    dose1_interval = 180; //3 hours
+  }
+  if(dose1_volume>560 && dose1_volume<=840)
+  {
+    dose1_interval = 120; //2 hours
+  }
+  if(dose1_volume>840)
+  {
+    dose1_interval = 60; // 1 hour
+  }
+  dose1_vol_per_dose = round((float)((10*dose1_volume)/(MINUTES_IN_WEEK/dose1_interval)));
+  #ifdef DEBUG
+  Serial.print("Dose1 Vol/Dose: ");
+  Serial.print(dose1_vol_per_dose);
+  Serial.print(" Interval: ");
+  Serial.print(dose1_interval);
+  Serial.print(" True Volume: ");
+  Serial.println((MINUTES_IN_WEEK/dose1_interval)*dose1_vol_per_dose);
+  #endif
 }
 
 
-void manualDose1(uint16_t volume)
+void manualDose1(uint16_t volume) //volume is given in 1/10 of a ml
 {
-  uint16_t scaleNum = 89;
+  uint16_t scaleNum = 88;
   uint8_t scaleDen = 1;
-  uint16_t doseTime = (volume * scaleNum)/scaleDen;
+  uint32_t doseTime = ((uint32_t)volume * scaleNum)/scaleDen;
+  //Serial.print("Dosing: ");
+  //Serial.println(doseTime);
   digitalWrite(DOSING_PUMP_1,1);
   delay(doseTime);
   digitalWrite(DOSING_PUMP_1,0);
+}
+
+void manualDose2(uint16_t volume)
+{
+  uint16_t scaleNum = 88;
+  uint8_t scaleDen = 1;
+  uint32_t doseTime = (volume * scaleNum)/scaleDen;
+  digitalWrite(DOSING_PUMP_2,1);
+  delay(doseTime);
+  digitalWrite(DOSING_PUMP_2,0);
 }
 
 void updateDose2Interval(void)
@@ -458,7 +505,7 @@ void updateDose2Interval(void)
       valid_combination = 1;                      //then we have settled on a valid combination
       dose2_vol_per_dose = (int)doseVolume*10;
       //Serial.println("valid combination found");
-      sprintf(stringBuffer,"Dose2: %i, Interval2: %i, Num2: %i",dose2_vol_per_dose,dose2_interval,numDoses);
+      sprintf(stringBuffer,"Dose2_vol: %i, Interval2: %i, Num2: %i",dose2_vol_per_dose,dose2_interval,numDoses);
       Serial.println(stringBuffer);
     }
   }
@@ -466,12 +513,12 @@ void updateDose2Interval(void)
 
 void updateDose2(void)
 {
-  Serial.print("checking ");
+  //Serial.print("checking ");
   if(minutes_ctr2 == dose2_interval)
   {
     deliverDose(1,dose2_vol_per_dose);
     minutes_ctr2 = 0;
-    Serial.print("Dosing... ");
+    //Serial.print("Dosing... ");
   }
 }
 
@@ -808,7 +855,7 @@ void changeTime(char command, uint16_t *variable) //this is kind of a hack... re
   {
     //Serial.println("Loop");
     if(command == 'U')
-    {
+    {                     //increment number of minutes by 60 (editing hours)
       if(editingHours)
         *variable = (*variable + 60);
       else
@@ -1181,7 +1228,7 @@ void navigateMenu(char command) //master menu navigation function
   if(currentMenu == DOSE_PUMP_1_MENU)
   {
     if(!editingVariable)
-      parseCursorPos(command,0,5);
+      parseCursorPos(command,0,4);
     switch(cursor)
     {
       case 0:
@@ -1194,24 +1241,18 @@ void navigateMenu(char command) //master menu navigation function
           dose1_volume = changeVariable(command,dose1_volume,10,1000);
       break;
       case 1:
-        //if(buttonPressed)
-          //editingVariable=!editingVariable;
-        //if(editingVariable)
-          //dose1_interval = changeVariable(command,dose1_interval,1,12);
-      break;
-      case 2:
         if(buttonPressed)
           editingVariable=!editingVariable;
         if(editingVariable)
           dose1_enabled = changeVariable(command,dose1_enabled,0,1);
       break;
-      case 3:
+      case 2:
       if(buttonPressed)
         {
           manualDose1(DOSE_VOLUME_TEST);
         }
       break;
-      case 4:
+      case 3:
         if(buttonPressed)
         {
           currentMenu = PUMP_SETTINGS_MENU;
@@ -1226,7 +1267,7 @@ void navigateMenu(char command) //master menu navigation function
   if(currentMenu == DOSE_PUMP_2_MENU)
   {
     if(!editingVariable)
-      parseCursorPos(command,0,5);
+      parseCursorPos(command,0,4);
     switch(cursor)
     {
       case 0:
@@ -1239,24 +1280,18 @@ void navigateMenu(char command) //master menu navigation function
         dose2_volume = changeVariable(command,dose2_volume,10,1000);
       break;
       case 1:
-        //if(buttonPressed)
-          //editingVariable=!editingVariable;
-        //if(editingVariable)
-          //dose2_interval = changeVariable(command,dose2_interval,2,12);
-      break;
-      case 2:
         if(buttonPressed)
           editingVariable=!editingVariable;
         if(editingVariable)
           dose2_enabled = changeVariable(command,dose2_enabled,0,1);
       break;
-      case 3:
+      case 2:
       if(buttonPressed)
         {
-          manualDose1(dose2_volume);
+          manualDose2(dose2_volume);
         }
       break;
-      case 4:
+      case 3:
         if(buttonPressed)
         {
           currentMenu = PUMP_SETTINGS_MENU;
@@ -1620,10 +1655,10 @@ void displayDosePump1Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
     display.setFont(u8g2_font_profont12_mr); //draw the title block
     display.drawStr(27,11,menuTitle);
     display.setFont(u8g2_font_profont10_mr); //draw the item menus
-    display.drawStr(optx,opty,"Volume/wk: ");
+    display.drawStr(optx,opty+optyspace,"Volume/wk: ");
     sprintf(stringBuffer,"%i",dose1_volume);
-    display.drawStr(optx+69,opty,stringBuffer);
-    display.drawStr(optx+90,opty,"ml");
+    display.drawStr(optx+69,opty+optyspace,stringBuffer);
+    display.drawStr(optx+90,opty+optyspace,"ml");
     //display.drawStr(optx,opty+optyspace,"Interval: ");
     //sprintf(stringBuffer,"%i",dose1_interval);
     //display.drawStr(optx+48,opty+optyspace,stringBuffer);
@@ -1640,18 +1675,15 @@ void displayDosePump1Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
         display.drawFrame(0,0,126,63);                //draw box around whole frame to indicate selection
         break;
       case 0:
-        display.drawBox(optx-2,opty-7,boxw,boxh);
+        display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
         break;
       case 1:
-        //display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
-        break;
-      case 2:
         display.drawBox(optx-2,(opty+2*optyspace)-7,boxw,boxh);
         break;
-      case 3:
+      case 2:
         display.drawBox(optx-2,(opty+3*optyspace)-7,boxw,boxh);
         break;
-      case 4:
+      case 3:
         display.drawBox(backx-2,backy-7,23,boxh);
         break;
     }
@@ -1684,10 +1716,10 @@ void displayDosePump2Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
     display.setFont(u8g2_font_profont12_mr); //draw the title block
     display.drawStr(27,11,menuTitle);
     display.setFont(u8g2_font_profont10_mr); //draw the item menus
-    display.drawStr(optx,opty,"Volume/wk: ");
+    display.drawStr(optx,opty+optyspace,"Volume/wk: ");
     sprintf(stringBuffer,"%i",dose2_volume);
-    display.drawStr(optx+69,opty,stringBuffer);
-    display.drawStr(optx+90,opty,"ml");
+    display.drawStr(optx+69,opty+optyspace,stringBuffer);
+    display.drawStr(optx+90,opty+optyspace,"ml");
     //display.drawStr(optx,opty+optyspace,"Interval: ");
     //sprintf(stringBuffer,"%i",dose2_interval);
     //display.drawStr(optx+48,opty+optyspace,stringBuffer);
@@ -1704,18 +1736,15 @@ void displayDosePump2Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
         display.drawFrame(0,0,126,63);                //draw box around whole frame to indicate selection
         break;
       case 0:
-        display.drawBox(optx-2,opty-7,boxw,boxh);
+        display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
         break;
       case 1:
-        //display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
-        break;
-      case 2:
         display.drawBox(optx-2,(opty+2*optyspace)-7,boxw,boxh);
         break;
-      case 3:
+      case 2:
         display.drawBox(optx-2,(opty+3*optyspace)-7,boxw,boxh);
         break;
-      case 4:
+      case 3:
         display.drawBox(backx-2,backy-7,23,boxh);
         break;
     }
