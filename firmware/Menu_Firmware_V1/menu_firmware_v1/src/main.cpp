@@ -1,13 +1,26 @@
+/*
+HYDROPONICS CODE REV 0.1:
+List of things to do:
+Switch functions from all using global variables to passing by pointer,
+Move graphics/menu structure code to it's own header file
+Optimize dose pump functions to use less memory (one function rather than two separate ones per pump)
+Move static strings into PROGMEM to reduce RAM consumption
+
+
+*/
+
+
+
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <U8g2lib.h>
-//#include <string.h>
 #include <Wire.h>
 #include <Adafruit_NeoPixel.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <avr/pgmspace.h>
 #include <math.h>
+#include <SoftwareSerial.h>
 
 
 //pin definitions
@@ -43,6 +56,7 @@
 #define AUTO_TOPOFF_MENU 12
 #define DOSE_PUMP_1_MENU 13
 #define DOSE_PUMP_2_MENU 14
+#define DOSE_PUMP_CALIBRATION_MENU 15
 
 #define LOOP_COUNT_1_SECOND 27000     //approximate number of main loop cycles for one second
 #define REFERENCE_PH 7
@@ -73,18 +87,18 @@ void displayPHMenu(uint8_t);          //show the PH settings menu
 void displayMainPumpMenu(uint8_t);    //show the main pump settings menu
 void displayDosePump1Menu(uint8_t);   //show dosing pump 1 settings menu
 void displayDosePump2Menu(uint8_t);   //show dosign pump 2 settings menu
-//void displaySettingsMenu(uint8_t);    //show the settings menu (save settings, reset to default)
+//void displaySettingsMenu(uint8_t);  //show the settings menu (save settings, reset to default)
+void displayDosePumpCalibrationMenu(uint8_t); //Display the calibration menu for the dosing pumps
 
 void refreshDisplay(uint8_t,uint8_t); //refreshes the display, given inputs are current menu and cursor position
 void periodicRefresh(void);           //updates variables (ph, time, temperature), and refreshes the display
 
 void getTimeofDay(void);              //retreive the current time of day from the RTC
 void setTimeofDay(uint8_t, uint8_t);  //set the current time of day from the RTC
-void setTimeofWeek(uint8_t);             //set the day of the week
+void setTimeofWeek(uint8_t);          //set the day of the week
 
 void readTemperature(void);           //reads the temperature from the DS18B20, stores it in two 8-bit variables, one for the integer part, and one for one decimal place
 void readPH(void);                    //reads the current PH from the sensor, stores it in two 8-bit variables, one for the integer part, and one for one decimal place
-
 
 void setupIO(void);                   //pinMode stuff
 
@@ -101,6 +115,7 @@ void updateDose2Interval(void);       //updates the dosing volume and interval f
 void setupDoses(void);                //sets the remaining dose volume for the day at the start of every day
 void manualDose1(uint16_t);           //manually dose a certain volume
 void changeInterval(char,uint16_t);   //calculates allowable intervals based on dose volume
+void calibrateDosePumps(void);        //calibrates the dosing pump by timing the duration taken to drain 100ml through one of the pumps
 
 void deliverDose(uint8_t,uint16_t);   //delivers a dose of a specified volume to a specified pump
 
@@ -127,21 +142,20 @@ OneWire oneWire(A1);
 DallasTemperature tempSensor(&oneWire);
 
 //GLOBAL VARIABLES:
-uint16_t seconds = 0;         //time, seconds
-uint16_t minutes = 0;         //time, minutes
-uint16_t hours = 0;           //time, hours
-uint8_t days = 0;             //time, days
-uint16_t time_minutes = 720;  //maximum of 1440, represents the time of day in minutes only
+uint16_t seconds = 0;          //time, seconds
+uint16_t minutes = 0;          //time, minutes
+uint16_t hours = 0;            //time, hours
+uint8_t days = 0;              //time, days
+uint16_t time_minutes = 720;   //maximum of 1440, represents the time of day in minutes only
 uint8_t hours_ctr = 0;
 uint16_t minutes_ctr1 = 0;     //increments every minute, used to keep track of when to dose pump1
 uint16_t minutes_ctr2 = 0;     //increments every minute, used to keep track of when to dose pump 2
 
+uint16_t temperature = 512;    //temperature represented as an int
+uint8_t temperature_int = 0;   //the integer part of the temperature variable
+uint8_t temperature_frac = 0;  //the fractional part of the temperature variable
 
-uint16_t temperature = 512;   //temperature represented as an int
-uint8_t temperature_int = 0;  //the integer part of the temperature variable
-uint8_t temperature_frac = 0; //the fractional part of the temperature variable
-
-uint16_t ph = 0;              //maximum of 1024. PH represented as 0->0, 14->1024
+uint16_t ph = 0;               //maximum of 1024. PH represented as 0->0, 14->1024
 uint8_t ph_int = 0;
 uint8_t ph_frac = 0;
 int16_t ph_offset = 0;         //offset calibration value for the output offset voltage of the amplifier
@@ -155,14 +169,14 @@ uint8_t encoder_b;
 uint8_t encoder_aLast;
 uint8_t encoder_bLast;
 uint8_t encoder_button;
-int8_t encoder_pulsectr = 0; //counts the pulses from the encoder to determine whether the command is up or down (encoder does two pulses per detent)
-uint8_t buttonPressed = 0;    //command to tell if button has been pressed by user
+int8_t encoder_pulsectr = 0;   //counts the pulses from the encoder to determine whether the command is up or down (encoder does two pulses per detent)
+uint8_t buttonPressed = 0;     //command to tell if button has been pressed by user
 
 //LIGHT variables
 uint8_t led_brightness = 100;
-uint16_t led_on_time = 360;   //time of day that the LED strip turns on
-uint16_t led_off_time = 1080; //time of day that the LED strip turns off
-uint8_t led_enabled = 1;      //LED strip enable
+uint16_t led_on_time = 360;    //time of day that the LED strip turns on
+uint16_t led_off_time = 1080;  //time of day that the LED strip turns off
+uint8_t led_enabled = 1;       //LED strip enable
 
 //Main Pump Variables:
 uint8_t main_pump_on_interval = 1;    //ON-time of the main pump in minutes
@@ -190,6 +204,9 @@ uint16_t dose2_interval = 0;  //time in minutes between doses
 uint8_t dose2_enabled = 1;    //is dosing pump 1 enabled?
 uint16_t dose2_last_time;     //when was the last dose delivered (hours)
 
+uint8_t dosePumpCalState = 0;     //calibration state for the dosing pump (is the pump ON or OFF)
+uint8_t dose_pump_scale_factor = 89; //scaling factor for dosing pump dose length calibration
+
 //Menu navigation global variables:
 uint8_t cursor = 0;                     //used for menu navigation horizontally
 uint8_t menuLevel = 1;                  //used for menu navigation vertically
@@ -200,8 +217,6 @@ char lastCommand = '\0';
 
 char stringBuffer[50];    //used as an intermediary for the sprintf function
 
-
-
 int8_t position = 0;  //test var for encoder position
 uint64_t loopCtr = 0;
 
@@ -211,7 +226,6 @@ int deltat;
 
 void setup()
 {
-
   Wire.begin();           //initialize I2C bus
   display.begin();        //start the display
   Serial.begin(9600);     //start serial port
@@ -460,7 +474,7 @@ void updateDose1Interval(void)
 
 void manualDose1(uint16_t volume) //volume is given in 1/10 of a ml
 {
-  uint16_t scaleNum = 88;
+  uint16_t scaleNum = dose_pump_scale_factor;
   uint8_t scaleDen = 1;
   uint32_t doseTime = ((uint32_t)volume * scaleNum)/scaleDen;
   //Serial.print("Dosing: ");
@@ -472,7 +486,7 @@ void manualDose1(uint16_t volume) //volume is given in 1/10 of a ml
 
 void manualDose2(uint16_t volume)
 {
-  uint16_t scaleNum = 88;
+  uint16_t scaleNum = dose_pump_scale_factor;
   uint8_t scaleDen = 1;
   uint32_t doseTime = (volume * scaleNum)/scaleDen;
   digitalWrite(DOSING_PUMP_2,1);
@@ -482,33 +496,59 @@ void manualDose2(uint16_t volume)
 
 void updateDose2Interval(void)
 {
-  uint8_t valid_combination = 0;
-  float error = 100;          //error between ideal dose flow rate and actual dose flow rate
-  float doseVolume;       //volume per dose, exact
-  uint16_t numDoses;      //number of doses per week
-  dose2_interval = 0;         //interval between doses, in minutes, start at 0
-  //Serial.println("updating dose1 interval");
-  while(!valid_combination)   //while a valid combination has not been found, keep looping
+  if(dose2_volume <=70 )
   {
-    dose2_interval++;                             //start at the lowest dose interval and increment
-    while(MINUTES_IN_WEEK%dose2_interval)         //only use intervals that can evenly be divided into a full week (10080 minutes)
-      dose2_interval++;                           //if the incremented interval is not a factor of 10080, increment again until it is
-    //Serial.println(dose1_interval);
-    numDoses = MINUTES_IN_WEEK/dose2_interval;    //the number of doses per week will be equal to 10080/the interval;
-    doseVolume = (float)dose2_volume/numDoses;    //the ideal exact volume per dose will be the total volume divided by the number of doses
-    doseVolume = 10*doseVolume;                   //we can only dose to 0.1ml of precision, so we need to remove everything after the tenths decimal place
-    doseVolume = (int)doseVolume;               //round to the nearest 0.1
-    doseVolume = (float)doseVolume/10;            //divide back down
-    error = (float)dose2_volume - (float)(doseVolume*numDoses); //calculate the deviation from the ideal dose rate (in ml/week)
-    if(error<0.01&&doseVolume>0.999)              //if the dose volume is above the minimum dose volume (1ml), and the error is below our threshold (0.01ml)
-    {
-      valid_combination = 1;                      //then we have settled on a valid combination
-      dose2_vol_per_dose = (int)doseVolume*10;
-      //Serial.println("valid combination found");
-      sprintf(stringBuffer,"Dose2_vol: %i, Interval2: %i, Num2: %i",dose2_vol_per_dose,dose2_interval,numDoses);
-      Serial.println(stringBuffer);
-    }
+    dose2_interval = 1440; //24 hours
   }
+  if(dose2_volume>70 && dose2_volume<=80)
+  {
+    dose2_interval = 1260; //21 hours
+  }
+  if(dose2_volume>80 && dose2_volume<=120)
+  {
+    dose2_interval = 840;  //14 hours
+  }
+  if(dose2_volume>120 && dose2_volume <=140)
+  {
+    dose2_interval = 720;  //12 hours
+  }
+  if(dose2_volume>140 && dose2_volume<=210)
+  {
+    dose2_interval = 480; //8 hours
+  }
+  if(dose2_volume>210 && dose2_volume<=240)
+  {
+    dose2_interval = 420; //7 hours
+  }
+  if(dose2_volume>240 && dose2_volume<=280)
+  {
+    dose2_interval = 360; //6 hours
+  }
+  if(dose2_volume>280 && dose2_volume<=420)
+  {
+    dose2_interval = 240; //4 hours
+  }
+  if(dose2_volume>420 && dose2_volume<=560)
+  {
+    dose2_interval = 180; //3 hours
+  }
+  if(dose2_volume>560 && dose2_volume<=840)
+  {
+    dose2_interval = 120; //2 hours
+  }
+  if(dose2_volume>840)
+  {
+    dose2_interval = 60; // 1 hour
+  }
+  dose2_vol_per_dose = round((float)((10*dose2_volume)/(MINUTES_IN_WEEK/dose2_interval)));
+  #ifdef DEBUG
+  Serial.print("Dose2 Vol/Dose: ");
+  Serial.print(dose2_vol_per_dose);
+  Serial.print(" Interval: ");
+  Serial.print(dose2_interval);
+  Serial.print(" True Volume: ");
+  Serial.println((MINUTES_IN_WEEK/dose2_interval)*dose2_vol_per_dose);
+  #endif
 }
 
 void updateDose2(void)
@@ -524,7 +564,7 @@ void updateDose2(void)
 
 void deliverDose(uint8_t pump, uint16_t volume) //volume is in 1/10 of a ml, so 10 would be 1ml, 15 would be 1.5ml, etc.
 {
-  uint16_t scaleNum = 89;
+  uint16_t scaleNum = dose_pump_scale_factor;
   uint8_t scaleDen = 1;
   uint16_t doseTime = (volume * scaleNum)/scaleDen;
 
@@ -543,7 +583,28 @@ void deliverDose(uint8_t pump, uint16_t volume) //volume is in 1/10 of a ml, so 
   }
 }
 
-
+void calibrateDosePumps()
+{
+  command = '\0';
+  dosePumpCalState = 1;
+  refreshDisplay(currentMenu,cursor);
+  uint32_t initialTime = millis();
+  digitalWrite(DOSING_PUMP_1,1);
+  while(command != 'E')
+    command = parseEncoderInput();      //wait in this loop until the user presses the button again
+  digitalWrite(DOSING_PUMP_1,0);
+  uint32_t finalTime = millis();
+  refreshDisplay(currentMenu,cursor);
+  uint32_t deltaTime = finalTime - initialTime;
+  #ifdef DEBUG
+    Serial.println(deltaTime);
+  #endif
+  dose_pump_scale_factor = deltaTime / 1000; //deltaTime is the # of ms taken to dose 100ml, our scale factor is the # of ms to dose 0.1ml.
+  #ifdef DEBUG
+    Serial.println(dose_pump_scale_factor);
+  #endif
+  command = '\0';
+}
 
 void readEEPROMVariables()
 {
@@ -927,6 +988,9 @@ void refreshDisplay(uint8_t current_menu, uint8_t cursorPos)  //update the infor
     case DOSE_PUMP_2_MENU:
       displayDosePump2Menu(cursorPos);
     break;
+    case DOSE_PUMP_CALIBRATION_MENU:
+      displayDosePumpCalibrationMenu(cursorPos);
+    break;
   }
 }
 
@@ -1228,7 +1292,7 @@ void navigateMenu(char command) //master menu navigation function
   if(currentMenu == DOSE_PUMP_1_MENU)
   {
     if(!editingVariable)
-      parseCursorPos(command,0,4);
+      parseCursorPos(command,0,5);
     switch(cursor)
     {
       case 0:
@@ -1253,6 +1317,14 @@ void navigateMenu(char command) //master menu navigation function
         }
       break;
       case 3:
+      if(buttonPressed)
+      {
+        currentMenu = DOSE_PUMP_CALIBRATION_MENU;
+        cursor = 0;
+        buttonPressed = 0;
+      }
+      break;
+      case 4:
         if(buttonPressed)
         {
           currentMenu = PUMP_SETTINGS_MENU;
@@ -1267,7 +1339,7 @@ void navigateMenu(char command) //master menu navigation function
   if(currentMenu == DOSE_PUMP_2_MENU)
   {
     if(!editingVariable)
-      parseCursorPos(command,0,4);
+      parseCursorPos(command,0,5);
     switch(cursor)
     {
       case 0:
@@ -1292,10 +1364,37 @@ void navigateMenu(char command) //master menu navigation function
         }
       break;
       case 3:
+      if(buttonPressed)
+      {
+
+      }
+      break;
+      case 4:
         if(buttonPressed)
         {
           currentMenu = PUMP_SETTINGS_MENU;
           cursor = 2;
+          writeEEPROMVariables();
+        }
+      break;
+    }
+  }
+
+  if(currentMenu == DOSE_PUMP_CALIBRATION_MENU)
+  {
+    if(!editingVariable)
+      parseCursorPos(command,0,2);
+    switch(cursor)
+    {
+      case 0:
+        if(buttonPressed)
+          calibrateDosePumps();
+      break;
+      case 1:
+        if(buttonPressed)
+        {
+          currentMenu = PUMP_SETTINGS_MENU;
+          cursor = 3;
           writeEEPROMVariables();
         }
       break;
@@ -1655,17 +1754,14 @@ void displayDosePump1Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
     display.setFont(u8g2_font_profont12_mr); //draw the title block
     display.drawStr(27,11,menuTitle);
     display.setFont(u8g2_font_profont10_mr); //draw the item menus
-    display.drawStr(optx,opty+optyspace,"Volume/wk: ");
+    display.drawStr(optx,opty,"Volume/wk: ");
     sprintf(stringBuffer,"%i",dose1_volume);
-    display.drawStr(optx+69,opty+optyspace,stringBuffer);
-    display.drawStr(optx+90,opty+optyspace,"ml");
-    //display.drawStr(optx,opty+optyspace,"Interval: ");
-    //sprintf(stringBuffer,"%i",dose1_interval);
-    //display.drawStr(optx+48,opty+optyspace,stringBuffer);
-    //display.drawStr(optx+68,opty+optyspace,"mins");
-    display.drawStr(optx,opty+2*optyspace,"Status:");
-    display.drawStr(optx+55,opty+2*optyspace,state);
-    display.drawStr(optx,opty+3*optyspace,"Force Dose");
+    display.drawStr(optx+69,opty,stringBuffer);
+    display.drawStr(optx+90,opty,"ml");
+    display.drawStr(optx,opty+optyspace,"Status:");
+    display.drawStr(optx+55,opty+optyspace,state);
+    display.drawStr(optx,opty+2*optyspace,"Force Dose");
+    display.drawStr(optx,opty+3*optyspace,"Calibrate Pump");
     display.drawStr(backx,backy,"Back");            //draw the back button (not needed for this menu context)
     display.setDrawColor(2);
     //display.setDrawColor(1);
@@ -1675,15 +1771,18 @@ void displayDosePump1Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
         display.drawFrame(0,0,126,63);                //draw box around whole frame to indicate selection
         break;
       case 0:
-        display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
+        display.drawBox(optx-2,(opty)-7,boxw,boxh);
         break;
       case 1:
-        display.drawBox(optx-2,(opty+2*optyspace)-7,boxw,boxh);
+        display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
         break;
       case 2:
-        display.drawBox(optx-2,(opty+3*optyspace)-7,boxw,boxh);
+        display.drawBox(optx-2,(opty+2*optyspace)-7,boxw,boxh);
         break;
       case 3:
+        display.drawBox(optx-2,(opty + 3*optyspace)-7,boxw,boxh);
+        break;
+      case 4:
         display.drawBox(backx-2,backy-7,23,boxh);
         break;
     }
@@ -1716,17 +1815,14 @@ void displayDosePump2Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
     display.setFont(u8g2_font_profont12_mr); //draw the title block
     display.drawStr(27,11,menuTitle);
     display.setFont(u8g2_font_profont10_mr); //draw the item menus
-    display.drawStr(optx,opty+optyspace,"Volume/wk: ");
+    display.drawStr(optx,opty,"Volume/wk: ");
     sprintf(stringBuffer,"%i",dose2_volume);
-    display.drawStr(optx+69,opty+optyspace,stringBuffer);
-    display.drawStr(optx+90,opty+optyspace,"ml");
-    //display.drawStr(optx,opty+optyspace,"Interval: ");
-    //sprintf(stringBuffer,"%i",dose2_interval);
-    //display.drawStr(optx+48,opty+optyspace,stringBuffer);
-    //display.drawStr(optx+68,opty+optyspace,"mins");
-    display.drawStr(optx,opty+2*optyspace,"Status:");
-    display.drawStr(optx+55,opty+2*optyspace,state);
-    display.drawStr(optx,opty+3*optyspace,"Force Dose");
+    display.drawStr(optx+69,opty,stringBuffer);
+    display.drawStr(optx+90,opty,"ml");
+    display.drawStr(optx,opty+optyspace,"Status:");
+    display.drawStr(optx+55,opty+optyspace,state);
+    display.drawStr(optx,opty+2*optyspace,"Force Dose");
+    display.drawStr(optx,opty+3*optyspace,"Calibrate Pump");
     display.drawStr(backx,backy,"Back");            //draw the back button (not needed for this menu context)
     display.setDrawColor(2);
     //display.setDrawColor(1);
@@ -1736,19 +1832,62 @@ void displayDosePump2Menu(uint8_t cursorPos) //4 cursor positions none, 1,2,3, a
         display.drawFrame(0,0,126,63);                //draw box around whole frame to indicate selection
         break;
       case 0:
-        display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
+        display.drawBox(optx-2,(opty)-7,boxw,boxh);
         break;
       case 1:
-        display.drawBox(optx-2,(opty+2*optyspace)-7,boxw,boxh);
+        display.drawBox(optx-2,(opty+optyspace)-7,boxw,boxh);
         break;
       case 2:
-        display.drawBox(optx-2,(opty+3*optyspace)-7,boxw,boxh);
+        display.drawBox(optx-2,(opty+2*optyspace)-7,boxw,boxh);
         break;
       case 3:
+        display.drawBox(optx-2,(opty+3*optyspace)-7,boxw,boxh);
+        break;
+      case 4:
         display.drawBox(backx-2,backy-7,23,boxh);
         break;
     }
   } while(display.nextPage() );
+}
+
+void displayDosePumpCalibrationMenu(uint8_t cursorPos)
+{
+
+  char stateStr[5];
+  if(dosePumpCalState)
+    sprintf(stateStr,"STOP");
+  else
+    sprintf(stateStr,"START");
+
+  uint8_t backx = 54;
+  uint8_t backy = 60;
+  uint8_t optx = 10;
+  uint8_t opty = 20;
+  uint8_t optyspace = 10;
+  uint8_t boxw = 105;
+  uint8_t boxh = 9;
+
+  display.firstPage();
+  do
+  {
+    display.drawStr(backx,backy,"Back");
+    display.drawStr(3,11,"1) Press to start pump");
+    display.drawStr(3,11+1*optyspace,"2) Press again once 100");
+    display.drawStr(3,11+2*optyspace,"   mL has been drained");
+    display.drawStr(52,11+3*optyspace+5,stateStr);
+
+    switch(cursorPos)
+    {
+    case 0:
+      display.drawBox(50-1,11+3*optyspace-3,29,9);
+    break;
+    case 1:
+      display.drawBox(backx-2,backy-7,23,boxh);
+    break;
+    }
+
+  }while(display.nextPage() );
+
 }
 
 /*
