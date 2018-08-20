@@ -6,7 +6,6 @@ Move graphics/menu structure code to it's own header file
 Optimize dose pump functions to use less memory (one function rather than two separate ones per pump)
 Move static strings into PROGMEM to reduce RAM consumption
 
-
 */
 
 
@@ -217,17 +216,9 @@ char lastCommand = '\0';
 
 char stringBuffer[50];    //used as an intermediary for the sprintf function
 
+
 int8_t position = 0;  //test var for encoder position
 uint64_t loopCtr = 0;
-
-
-// LOIC LOIC LOIC LOIC LOIC LOIC LOIC LOIC LOIC LOIC
-
-int last_dose1_enabled = 1;
-SoftwareSerial mySerial(A3, A2); // RX, TX
-
-// LOIC LOIC LOIC LOIC LOIC LOIC LOIC LOIC LOIC LOIC
-
 uint8_t i;
 int t;
 int deltat;
@@ -283,29 +274,6 @@ void loop()
     loopCtr = 0;
   }
   loopCtr++;
-
-  // LOIC LOIC LOIC LOIC LOIC LOIC LOIC
-
-  // Monitor chamges to dose1_enabled
-  if (dose1_enabled != last_dose1_enabled) {
-    // Convert the new setting into JSON string
-    String val = (dose1_enabled) ? "true" : "false";
-    String json = "{'dose1_enabled' : " + val + "}";
-    // Write the new setting to the Serial monitor
-    Serial.println(json);
-    // the new setting becomes the last setting
-    last_dose1_enabled = dose1_enabled;
-  }
-
-  if (mySerial.available()) {
-    Serial.write(mySerial.read());
-  }
-
-  if (Serial.available()) {
-    mySerial.write(Serial.read());
-  }
-
-  // LOIC LOIC LOIC LOIC LOIC LOIC LOIC
 }
 
 //FUNCTIONS (most of these use global variables, I would like to clean that up in the future if given time)

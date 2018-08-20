@@ -1,0 +1,53 @@
+Title,
+Revision,
+Date,
+Generated,Mon 11 Jun 2018 10:56:25 AM EDT
+Company,
+Comment 1,
+Comment 2,
+Comment 3,
+Comment 4,
+Total Parts,85
+Total Unique Parts,32
+
+
+
+Ref,Qty,Value,Footprint,Datasheet,Category,DK_Datasheet_Link,DK_Detail_Page,Description,Digi-Key_PN,Family,Field4,MPN,Manufacturer,
+C1 C2 C8 C9 C11 C12 ,6,0.1uF,Capacitors_SMD:C_0805_HandSoldering,, , , , , , , , , 
+C3 C4 C5 C6 C10 C13 ,6,5ZLH100MEFC6.3X11,Capacitors_ThroughHole:C_Radial_D6.3_L11.2_P2.5,, , , , , , ,100uF 35V, , 
+C7 ,1,12.5pF NP0,Capacitors_SMD:C_0805_HandSoldering,, , , , , , , , , 
+CON1 ,1,PJ-202A,Connect:BARREL_JACK,, , , , , , , , , 
+D2 D3 D4 D5 ,4,S1GTR,Diodes_SMD:SMA_Handsoldering,, , , , , , , , , 
+D8 D9 D11 D13 D14 D16 D17 D18 D19 D20 D21 ,11,GN,LEDs:LED_0805,, , , , , , , , , 
+J1 J2 ,2,282836-6,USER_CONNECTORS:282836-6,, , , , , , , , , 
+J3 ,1,RJHSE-5080,USER_CONNECTORS:RJHSE-5080,, , , , , , , , , 
+JP1 ,1,Jumper_NO_Small,Pin_Headers:Pin_Header_Straight_1x02,, , , , , , , , , 
+LED1 ,1,COM-12999(WS2812),USER_LEDS:LED-RGB-5MM_Common_Cathode,, , , , , , , , , 
+P2 ,1,0022053031,Pin_Headers:Pin_Header_Angled_1x03,, , , , , , , , , 
+P3 P6 P7 P8 ,4,MTG,Mounting_Holes:MountingHole_2-7mm,, , , , , , , , , 
+P4 ,1,22-05-3021,Pin_Headers:Pin_Header_Angled_1x02,, , , , , , , , , 
+P5 ,1,22-05-3021,Pin_Headers:Pin_Header_Straight_1x02,, , , , , , , , , 
+P9 ,1,0731000105,USER_CONNECTORS:0731000105,, , , , , , , , , 
+PCB1 ,1,ESP8266,USER_MODULES:ESP8266,, , , , , , , , , 
+Q1 ,1,DMN65D8L-7,TO_SOT_Packages_SMD:SOT-23_Handsoldering,, , , , , , , , , 
+Q5 Q6 Q7 Q8 Q9 ,5,PSMN022-30PL,127,TO_SOT_Packages_THT:TO-220_Neutral123_Horizontal_LargePads,, , , , , , , , , 
+R4 R5 R7 R8 R9 R10 R11 R14 R15 R16 R19 R20 R21 R22 ,14,10.0k,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R6 ,1,4.7k,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R12 ,1,0,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R13 ,1,DNP,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R17 R18 ,2,10.0k 0.1%,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R26 R29 R35 R36 R37 R38 R39 ,7,500,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R27 ,1,1.0k,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+R31 R32 R34 ,3,200,Resistors_SMD:R_0805_HandSoldering,, , , , , , , , , 
+REF1 ,1,LT1004CZ-2.5,TO_SOT_Packages_THT:TO-92_Inline_Wide,, , , , , , , , , 
+SHIELD1 ,1,ARDUINO_SHIELD_R3_WI2C,ARDUINO_SHIELDS:ARDUINO_SHIELD_R3_WI2C,, , , , , , , , , 
+U1 ,1,LMC6482IN,Housings_DIP:DIP-8_W7.62mm,, , , , , , , , , 
+U2 ,1,PCF8563,digikey-footprints:8-SOIC,, , , , , , , , , 
+U3 ,1,AZ1117CH-3_3TRG1,digikey-footprints:SOT-223,https://www.diodes.com/assets/Datasheets/AZ1117C.pdf,Integrated Circuits (ICs),https://www.diodes.com/assets/Datasheets/AZ1117C.pdf,/product-detail/en/diodes-incorporated/AZ1117CH-3.3TRG1/AZ1117CH-3.3TRG1DICT-ND/4505206,IC REG LIN POS ADJ 800MA SOT223,AZ1117CH-3.3TRG1DICT-ND,PMIC - Voltage Regulators - Linear, ,AZ1117CH-3.3TRG1,Diodes Incorporated
+Y1 ,1,CFS-20632768DZFB,Crystals:Crystal_Round_Horizontal_2mm,, , , , , , , , , 
+
+
+
+
+BOM made with KICAD_BOM_WIZARD (https://github.com/HashDefineElectronics/KiCad_BOM_Wizard.git)
+Generated Mon 11 Jun 2018 10:56:25 AM EDT
