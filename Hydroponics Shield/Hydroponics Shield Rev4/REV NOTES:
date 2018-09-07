@@ -1,0 +1,7 @@
+-Changed linear regulator for the 5V rail out for a switching unit to reduce thermal issues
+-Changed power of ESP32 from 3.3V to 5V
+-Attached arduino RX to software serial RX to allow full duplex
+-Moved BNC connector outwards by _mm
+-Removed neopixel
+-added input for flow switch
+-added row headers to BOM

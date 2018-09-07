@@ -1,4 +1,168 @@
 EESchema Schematic File Version 4
+LIBS:USER_SYMBOLS
+LIBS:USER_MOSFETS
+LIBS:CAPSTONE
+LIBS:dk_Addressable_Specialty
+LIBS:dk_Alarms_Buzzers_and_Sirens
+LIBS:dk_Automotive_Relays
+LIBS:dk_Balun
+LIBS:dk_Barrel-Audio_Connectors
+LIBS:dk_Battery_Holders_Clips_Contacts
+LIBS:dk_Capacitive_Touch_Sensors_Proximity_Sensor_ICs
+LIBS:dk_Clock-Timing-Clock_Generators_PLLs_Frequency_Synthesizers
+LIBS:dk_Clock-Timing-Programmable_Timers_and_Oscillators
+LIBS:dk_Clock-Timing-Real_Time_Clocks
+LIBS:dk_Coaxial_Connectors_(RF)
+LIBS:dk_Current_Transducers
+LIBS:dk_Data_Acquisition-ADCs-DACs-Special_Purpose
+LIBS:dk_Data_Acquisition-Analog_to_Digital_Converters_(ADC)
+LIBS:dk_Data_Acquisition-Digital_Potentiometers
+LIBS:dk_Data_Acquisition-Digital_to_Analog_Converters_(DAC)
+LIBS:dk_Data_Acquisition-Touch_Screen_Controllers
+LIBS:dk_DC_DC_Converters
+LIBS:dk_Digital_Isolators
+LIBS:dk_Diodes-Bridge_Rectifiers
+LIBS:dk_Diodes-Rectifiers-Arrays
+LIBS:dk_Diodes-Rectifiers-Single
+LIBS:dk_Diodes-Zener-Single
+LIBS:dk_Display_Modules-LED_Character_and_Numeric
+LIBS:dk_D-Sub_Connectors
+LIBS:dk_Embedded-Microcontrollers
+LIBS:dk_Encoders
+LIBS:dk_Evaluation_Boards-Embedded-MCU_DSP
+LIBS:dk_Evaluation_Boards-Sensors
+LIBS:dk_Ferrite_Beads_and_Chips
+LIBS:dk_Fixed_Inductors
+LIBS:dk_Fuses
+LIBS:dk_Gas_Sensors
+LIBS:dk_Humidity_Moisture_Sensors
+LIBS:dk_Image_Sensors_Camera
+LIBS:dk_Infrared_UV_Visible_Emitters
+LIBS:dk_Inrush_Current_Limiters_(ICL)
+LIBS:dk_Interface-Analog_Switches_Multiplexers_Demultiplexers
+LIBS:dk_Interface-Analog_Switches-Special_Purpose
+LIBS:dk_Interface-Controllers
+LIBS:dk_Interface-Drivers_Receivers_Transceivers
+LIBS:dk_Interface-I-O_Expanders
+LIBS:dk_Interface-Modules
+LIBS:dk_Interface-Sensor_and_Detector_Interfaces
+LIBS:dk_Interface-Specialized
+LIBS:dk_LED_Indication-Discrete
+LIBS:dk_LEDs-Circuit_Board_Indicators_Arrays_Light_Bars_Bar_Graphs
+LIBS:dk_Linear-Amplifiers-Audio
+LIBS:dk_Linear-Amplifiers-Instrumentation_OP_Amps_Buffer_Amps
+LIBS:dk_Linear-Comparators
+LIBS:dk_Logic-Buffers_Drivers_Receivers_Transceivers
+LIBS:dk_Logic-Flip_Flops
+LIBS:dk_Logic-Gates_and_Inverters
+LIBS:dk_Logic-Multivibrators
+LIBS:dk_Logic-Shift_Registers
+LIBS:dk_Logic-Signal_Switches_Multiplexers_Decoders
+LIBS:dk_Logic-Translators_Level_Shifters
+LIBS:dk_Magnetic_Sensors-Compass_Magnetic_Field_(Modules)
+LIBS:dk_Magnetic_Sensors-Linear_Compass_(ICs)
+LIBS:dk_Magnetic_Sensors-Switches_(Solid_State)
+LIBS:dk_Memory
+LIBS:dk_Memory_Connectors-PC_Card_Sockets
+LIBS:dk_Microphones
+LIBS:dk_Modular_Connectors-Jacks
+LIBS:dk_Modular_Connectors-Jacks_With_Magnetics
+LIBS:dk_Motion_Sensors-Accelerometers
+LIBS:dk_Motion_Sensors-IMUs_(Inertial_Measurement_Units)
+LIBS:dk_Motion_Sensors-Tilt_Switches
+LIBS:dk_Navigation_Switches_Joystick
+LIBS:dk_Optical_Sensors-Ambient_Light_IR_UV_Sensors
+LIBS:dk_Optical_Sensors-Photo_Detectors-Remote_Receiver
+LIBS:dk_Optical_Sensors-Photodiodes
+LIBS:dk_Optical_Sensors-Photointerrupters-Slot_Type-Logic_Output
+LIBS:dk_Optical_Sensors-Phototransistors
+LIBS:dk_Optical_Sensors-Reflective-Analog_Output
+LIBS:dk_Optoisolators-Logic_Output
+LIBS:dk_Optoisolators-Transistor_Photovoltaic_Output
+LIBS:dk_Optoisolators-Triac_SCR_Output
+LIBS:dk_Oscillators
+LIBS:dk_PMIC-AC_DC_Converters_Offline_Switchers
+LIBS:dk_PMIC-Battery_Chargers
+LIBS:dk_PMIC-Battery_Management
+LIBS:dk_PMIC-Current_Regulation-Management
+LIBS:dk_PMIC-Full_Half-Bridge_Drivers
+LIBS:dk_PMIC-Gate_Drivers
+LIBS:dk_PMIC-LED_Drivers
+LIBS:dk_PMIC-Motor_Drivers_Controllers
+LIBS:dk_PMIC-OR_Controllers_Ideal_Diodes
+LIBS:dk_PMIC-Power_Distribution_Switches_Load_Drivers
+LIBS:dk_PMIC-Power_Management-Specialized
+LIBS:dk_PMIC-RMS_to_DC_Converters
+LIBS:dk_PMIC-Supervisors
+LIBS:dk_PMIC-Thermal_Management
+LIBS:dk_PMIC-V-F_and_F-V_Converters
+LIBS:dk_PMIC-Voltage_Reference
+LIBS:dk_PMIC-Voltage_Regulators-DC_DC_Switching_Controllers
+LIBS:dk_PMIC-Voltage_Regulators-DC_DC_Switching_Regulators
+LIBS:dk_PMIC-Voltage_Regulators-Linear
+LIBS:dk_PMIC-Voltage_Regulators-Special_Purpose
+LIBS:dk_Power_Relays_Over_2_Amps
+LIBS:dk_Pressure_Sensors_Transducers
+LIBS:dk_Programmable_Oscillators
+LIBS:dk_Pushbutton_Switches
+LIBS:dk_Rectangular_Connectors-Headers_Male_Pins
+LIBS:dk_Reed_Relays
+LIBS:dk_Resistor_Networks_Arrays
+LIBS:dk_RF_Amplifiers
+LIBS:dk_RF_Antennas
+LIBS:dk_RF_Demodulators
+LIBS:dk_RF_Detectors
+LIBS:dk_RF_Evaluation_and_Development_Kits_Boards
+LIBS:dk_RFID_RF_Access_Monitoring_ICs
+LIBS:dk_RF_Receivers
+LIBS:dk_RF_Switches
+LIBS:dk_RF_Transceiver_ICs
+LIBS:dk_RF_Transceiver_Modules
+LIBS:dk_RF_Transmitters
+LIBS:dk_Rotary_Potentiometers_Rheostats
+LIBS:dk_Sensors_Transducers_Accessories
+LIBS:dk_Signal_Relays_Up_to_2_Amps
+LIBS:dk_Slide_Switches
+LIBS:dk_Sockets_for_ICs_Transistors
+LIBS:dk_Solid_State_Relays
+LIBS:dk_Specialized_ICs
+LIBS:dk_Specialized_Sensors
+LIBS:dk_Surge_Suppression_ICs
+LIBS:dk_Tactile_Switches
+LIBS:dk_Temperature_Sensors-Analog_and_Digital_Output
+LIBS:dk_Thermal_Cutoffs_(Thermal_Fuses)
+LIBS:dk_Thyristors-DIACs_SIDACs
+LIBS:dk_Thyristors-SCRs
+LIBS:dk_Thyristors-TRIACs
+LIBS:dk_Toggle_Switches
+LIBS:dk_Transistors-Bipolar_(BJT)-Arrays
+LIBS:dk_Transistors-Bipolar_(BJT)-RF
+LIBS:dk_Transistors-Bipolar_(BJT)-Single
+LIBS:dk_Transistors-Bipolar_(BJT)-Single_Pre-Biased
+LIBS:dk_Transistors-FETs_MOSFETs-Arrays
+LIBS:dk_Transistors-FETs_MOSFETs-RF
+LIBS:dk_Transistors-FETs_MOSFETs-Single
+LIBS:dk_Transistors-JFETs
+LIBS:dk_Trimmer_Potentiometers
+LIBS:dk_TVS-Diodes
+LIBS:dk_TVS-Mixed_Technology
+LIBS:dk_USB_DVI_HDMI_Connectors
+LIBS:GLASSES_BREAKOUT
+LIBS:OLD_LIBS
+LIBS:SMART_MIRROR_LIB
+LIBS:USER_BJTS
+LIBS:USER_CAPACITORS
+LIBS:USER_CONNECTORS
+LIBS:USER_DIODES
+LIBS:USER_GATE_DRIVERS
+LIBS:USER_MECHANICAL_OTHER
+LIBS:USER_MICROCONTROLLERS
+LIBS:USER_OPAMPS
+LIBS:USER_RESISTORS
+LIBS:USER_SENSORS
+LIBS:USER_MODULES
+LIBS:USER_LED_DRIVERS
+LIBS:USER_CLOCKS_CRYSTALS
 LIBS:hydroponics_shield_rev3-cache
 EELAYER 26 0
 EELAYER END
@@ -19,7 +183,7 @@ Connections to Arduino
 Text Notes 6850 7550 0    60   ~ 0
 BNC PH Probe Electrode Input
 $Comp
-L OLD_LIBS:GND #PWR01
+L GND #PWR01
 U 1 1 5AE747A3
 P 1300 2150
 F 0 "#PWR01" H 1300 1900 50  0001 C CNN
@@ -30,7 +194,7 @@ F 3 "" H 1300 2150 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:R R17
+L R R17
 U 1 1 5AE7490E
 P 7050 8400
 F 0 "R17" V 7150 8400 50  0000 C CNN
@@ -41,7 +205,7 @@ F 3 "" H 6975 8400 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR02
+L GND #PWR02
 U 1 1 5AE74A93
 P 7050 9200
 F 0 "#PWR02" H 7050 8950 50  0001 C CNN
@@ -52,7 +216,7 @@ F 3 "" H 7050 9200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR03
+L +5V #PWR03
 U 1 1 5AE74D39
 P 7050 8200
 F 0 "#PWR03" H 7050 8050 50  0001 C CNN
@@ -63,7 +227,7 @@ F 3 "" H 7050 8200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:R R12
+L R R12
 U 1 1 5AE75359
 P 6000 8050
 F 0 "R12" V 6100 7950 50  0000 C CNN
@@ -74,7 +238,7 @@ F 3 "" H 5925 8050 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R13
+L R R13
 U 1 1 5AE75589
 P 6450 8300
 F 0 "R13" V 6350 8350 50  0000 C CNN
@@ -85,7 +249,7 @@ F 3 "" H 6375 8300 30  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR04
+L GND #PWR04
 U 1 1 5AE755EF
 P 6450 8500
 F 0 "#PWR04" H 6450 8250 50  0001 C CNN
@@ -109,7 +273,7 @@ F 3 "" H 8350 8900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR05
+L +5V #PWR05
 U 1 1 5AE758C7
 P 8350 8750
 F 0 "#PWR05" H 8350 8600 50  0001 C CNN
@@ -120,7 +284,7 @@ F 3 "" H 8350 8750 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR06
+L GND #PWR06
 U 1 1 5AE758ED
 P 8350 9050
 F 0 "#PWR06" H 8350 8800 50  0001 C CNN
@@ -135,7 +299,7 @@ PH_VOUT
 Text Notes 925  3475 0    50   ~ 0
 +12V IN
 $Comp
-L OLD_LIBS:GND #PWR07
+L GND #PWR07
 U 1 1 5AE75D9B
 P 1400 3950
 F 0 "#PWR07" H 1400 3700 50  0001 C CNN
@@ -146,7 +310,7 @@ F 3 "" H 1400 3950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+12V #PWR08
+L +12V #PWR08
 U 1 1 5AE75E6A
 P 1400 3700
 F 0 "#PWR08" H 1400 3550 50  0001 C CNN
@@ -157,7 +321,7 @@ F 3 "" H 1400 3700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR09
+L GND #PWR09
 U 1 1 5AE77383
 P 12950 6400
 F 0 "#PWR09" H 12950 6150 50  0001 C CNN
@@ -168,7 +332,7 @@ F 3 "" H 12950 6400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:R R14
+L R R14
 U 1 1 5AE774B4
 P 12550 6150
 F 0 "R14" V 12450 6150 50  0000 C CNN
@@ -185,7 +349,7 @@ FLOAT_SWITCH_IN
 Text GLabel 3800 2200 2    50   Input ~ 0
 FLOAT_SWITCH_IN
 $Comp
-L OLD_LIBS:GND #PWR010
+L GND #PWR010
 U 1 1 5AE7F878
 P 12950 7600
 F 0 "#PWR010" H 12950 7350 50  0001 C CNN
@@ -196,7 +360,7 @@ F 3 "" H 12950 7600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:R R15
+L R R15
 U 1 1 5AE7F880
 P 12550 7350
 F 0 "R15" V 12450 7350 50  0000 C CNN
@@ -209,7 +373,7 @@ $EndComp
 Text GLabel 12150 7150 0    50   Input ~ 0
 DOSING_PUMP_2
 $Comp
-L USER_SYMBOLS:R R16
+L R R16
 U 1 1 5AE7FAC3
 P 12550 8550
 F 0 "R16" V 12450 8550 50  0000 C CNN
@@ -234,7 +398,7 @@ WIFI_DATA_TRANSMIT
 Text GLabel 1600 2700 0    50   Input ~ 0
 WIFI_DATA_RECEIVE
 $Comp
-L USER_SYMBOLS:R R9
+L R R9
 U 1 1 5AE86AC8
 P 10450 2300
 F 0 "R9" V 10350 2300 50  0000 C CNN
@@ -245,7 +409,7 @@ F 3 "" H 10375 2300 30  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R10
+L R R10
 U 1 1 5AE86C54
 P 10450 2700
 F 0 "R10" V 10350 2700 50  0000 C CNN
@@ -256,7 +420,7 @@ F 3 "" H 10375 2700 30  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR011
+L GND #PWR011
 U 1 1 5AE86DB3
 P 10450 2900
 F 0 "#PWR011" H 10450 2650 50  0001 C CNN
@@ -269,7 +433,7 @@ $EndComp
 Text GLabel 9750 2100 0    50   Input ~ 0
 WIFI_DATA_TRANSMIT
 $Comp
-L USER_SYMBOLS:R R7
+L R R7
 U 1 1 5AE889F5
 P 11100 1800
 F 0 "R7" V 11200 1900 50  0000 C CNN
@@ -280,7 +444,7 @@ F 3 "" H 11025 1800 30  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L OLD_LIBS:+3.3V #PWR012
+L +3.3V #PWR012
 U 1 1 5AE891D1
 P 11100 1400
 F 0 "#PWR012" H 11100 1250 50  0001 C CNN
@@ -293,7 +457,7 @@ $EndComp
 Text GLabel 9700 2000 0    50   Input ~ 0
 WIFI_DATA_RECEIVE
 $Comp
-L USER_SYMBOLS:R R8
+L R R8
 U 1 1 5AE899D8
 P 10250 1800
 F 0 "R8" V 10150 1800 50  0000 C CNN
@@ -304,7 +468,7 @@ F 3 "" H 10175 1800 30  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR013
+L +5V #PWR013
 U 1 1 5AE89CD0
 P 10250 1400
 F 0 "#PWR013" H 10250 1250 50  0001 C CNN
@@ -317,7 +481,7 @@ $EndComp
 Text Notes 10000 1750 2    50   ~ 0
 level shift circuitry
 $Comp
-L USER_SYMBOLS:R R11
+L R R11
 U 1 1 5AE8C793
 P 12550 10900
 F 0 "R11" V 12650 10900 50  0000 C CNN
@@ -332,7 +496,7 @@ TEMP_SENSE_IN
 Text Notes -3200 6950 0    50   ~ 0
 Estimated PH probe impedance:\n~750MOhm\n\nOffset caused by leakage:\nVdiff = Ileak * Rprobe  = 750e+6*Ileak\n\nex: 1pA input bias leads to an 0.75mV error at the input.\n
 $Comp
-L OLD_LIBS:+5V #PWR014
+L +5V #PWR014
 U 1 1 5AE93872
 P 7900 8200
 F 0 "#PWR014" H 7900 8050 50  0001 C CNN
@@ -343,7 +507,7 @@ F 3 "" H 7900 8200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR015
+L GND #PWR015
 U 1 1 5AE93C25
 P 7900 8850
 F 0 "#PWR015" H 7900 8600 50  0001 C CNN
@@ -356,7 +520,7 @@ $EndComp
 Text Notes 5050 8950 0    50   ~ 0
 DNP either R18\nOR Vref during assembly
 $Comp
-L USER_OPAMPS:LMC6482IN U1
+L LMC6482IN U1
 U 2 1 5AE92751
 P 6000 7700
 F 0 "U1" H 6150 8050 50  0000 L CNN
@@ -367,7 +531,7 @@ F 3 "" H 6000 7950 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L USER_OPAMPS:LMC6482IN U1
+L LMC6482IN U1
 U 1 1 5AE927F0
 P 7950 8500
 F 0 "U1" H 7950 8700 50  0000 L CNN
@@ -378,7 +542,7 @@ F 3 "" H 7950 8750 50  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L USER_CONNECTORS:0731000105 P9
+L 0731000105 P9
 U 1 1 5AE90667
 P 8400 7600
 F 0 "P9" H 8400 7725 50  0000 C CNN
@@ -389,7 +553,7 @@ F 3 "" H 8400 7600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_DIODES:LT1004CZ-2.5 REF1
+L LT1004CZ-2.5 REF1
 U 1 1 5AE9B7BE
 P 6800 8900
 F 0 "REF1" H 7000 9100 50  0000 C CNN
@@ -400,7 +564,7 @@ F 3 "" H 6800 8900 50  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L power:+12V #PWR016
+L +12V #PWR016
 U 1 1 5AEB7096
 P 14050 5500
 F 0 "#PWR016" H 14050 5350 50  0001 C CNN
@@ -411,7 +575,7 @@ F 3 "" H 14050 5500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+12V #PWR017
+L +12V #PWR017
 U 1 1 5AEBBE1C
 P 14050 6700
 F 0 "#PWR017" H 14050 6550 50  0001 C CNN
@@ -422,7 +586,7 @@ F 3 "" H 14050 6700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+12V #PWR018
+L +12V #PWR018
 U 1 1 5AEBC259
 P 14050 7900
 F 0 "#PWR018" H 14050 7750 50  0001 C CNN
@@ -433,7 +597,7 @@ F 3 "" H 14050 7900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MOSFETS:PSMN022-30PL,127 Q5
+L PSMN022-30PL,127 Q5
 U 1 1 5AEBFC11
 P 12850 10600
 F 0 "Q5" H 13100 10350 50  0000 L CNN
@@ -444,7 +608,7 @@ F 3 "" H 13100 10700 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MOSFETS:PSMN022-30PL,127 Q6
+L PSMN022-30PL,127 Q6
 U 1 1 5AEC064C
 P 12850 5850
 F 0 "Q6" H 13050 5650 50  0000 L CNN
@@ -455,7 +619,7 @@ F 3 "" H 13100 5950 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MOSFETS:PSMN022-30PL,127 Q7
+L PSMN022-30PL,127 Q7
 U 1 1 5AEC0928
 P 12850 7050
 F 0 "Q7" H 13050 6850 50  0000 L CNN
@@ -466,7 +630,7 @@ F 3 "" H 13100 7150 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MOSFETS:PSMN022-30PL,127 Q8
+L PSMN022-30PL,127 Q8
 U 1 1 5AEC0A34
 P 12850 8250
 F 0 "Q8" H 13050 8050 50  0000 L CNN
@@ -488,7 +652,7 @@ F 3 "" H 950 3850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR019
+L GND #PWR019
 U 1 1 5AEC8682
 P 12950 11150
 F 0 "#PWR019" H 12950 10900 50  0001 C CNN
@@ -499,7 +663,7 @@ F 3 "" H 12950 11150 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR020
+L GND #PWR020
 U 1 1 5AEC9AC1
 P 12950 8800
 F 0 "#PWR020" H 12950 8550 50  0001 C CNN
@@ -514,7 +678,7 @@ GROW LIGHTS OUT
 Text Notes 14750 5650 0    60   ~ 0
 PUMPS OUT
 $Comp
-L USER_SYMBOLS:R R18
+L R R18
 U 1 1 5AED3F27
 P 7050 8900
 F 0 "R18" V 7150 8900 50  0000 C CNN
@@ -538,7 +702,7 @@ $EndComp
 Text Notes 5150 8400 0    60   ~ 0
 Gain of 2
 $Comp
-L USER_CONNECTORS:282836-6 J1
+L 282836-6 J1
 U 1 1 5AEDA89B
 P 14850 10750
 F 0 "J1" H 14825 11025 60  0000 C CNN
@@ -549,7 +713,7 @@ F 3 "" H 14850 10850 60  0001 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L USER_CONNECTORS:282836-6 J2
+L 282836-6 J2
 U 1 1 5AEDAB80
 P 14950 6200
 F 0 "J2" H 14925 6475 60  0000 C CNN
@@ -560,7 +724,7 @@ F 3 "" H 14950 6300 60  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L USER_CAPACITORS:5ZLH100MEFC6.3X11 C3
+L 5ZLH100MEFC6.3X11 C3
 U 1 1 5AEDBDF9
 P 13900 5750
 F 0 "C3" H 13925 5850 50  0000 L CNN
@@ -572,7 +736,7 @@ F 4 "100uF 35V" H 14175 5625 60  0000 C CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_CAPACITORS:5ZLH100MEFC6.3X11 C4
+L 5ZLH100MEFC6.3X11 C4
 U 1 1 5AEDC606
 P 13900 6950
 F 0 "C4" H 13925 7050 50  0000 L CNN
@@ -584,7 +748,7 @@ F 4 "100uF 35V" H 14175 6825 60  0000 C CNN "Field4"
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_CAPACITORS:5ZLH100MEFC6.3X11 C5
+L 5ZLH100MEFC6.3X11 C5
 U 1 1 5AEDCA28
 P 13900 8150
 F 0 "C5" H 13925 8250 50  0000 L CNN
@@ -602,7 +766,7 @@ DOSING_PUMP_2
 Text GLabel 3800 1600 2    50   Input ~ 0
 MAIN_PUMP
 $Comp
-L OLD_LIBS:GND #PWR021
+L GND #PWR021
 U 1 1 5AEE22B0
 P 2750 5400
 F 0 "#PWR021" H 2750 5150 50  0001 C CNN
@@ -613,7 +777,7 @@ F 3 "" H 2750 5400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:R R20
+L R R20
 U 1 1 5AEE22B9
 P 2800 4850
 F 0 "R20" V 2900 4950 50  0000 C CNN
@@ -624,7 +788,7 @@ F 3 "" H 2725 4850 30  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR022
+L +5V #PWR022
 U 1 1 5AEE22C7
 P 2800 4650
 F 0 "#PWR022" H 2800 4500 50  0001 C CNN
@@ -635,7 +799,7 @@ F 3 "" H 2800 4650 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR023
+L +5V #PWR023
 U 1 1 5AEE26FD
 P 4400 4650
 F 0 "#PWR023" H 4400 4500 50  0001 C CNN
@@ -646,7 +810,7 @@ F 3 "" H 4400 4650 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR024
+L GND #PWR024
 U 1 1 5AEE28D3
 P 4400 5400
 F 0 "#PWR024" H 4400 5150 50  0001 C CNN
@@ -661,7 +825,7 @@ TEMP_SENSE_IN
 Text GLabel 1450 5150 2    50   Input ~ 0
 AUX_BTTN1_IN
 $Comp
-L OLD_LIBS:GND #PWR025
+L GND #PWR025
 U 1 1 5AEE389B
 P 1200 5400
 F 0 "#PWR025" H 1200 5150 50  0001 C CNN
@@ -672,7 +836,7 @@ F 3 "" H 1200 5400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:R R21
+L R R21
 U 1 1 5AEE38A4
 P 1250 4900
 F 0 "R21" V 1350 5000 50  0000 C CNN
@@ -683,7 +847,7 @@ F 3 "" H 1175 4900 30  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR026
+L +5V #PWR026
 U 1 1 5AEE38B2
 P 1250 4650
 F 0 "#PWR026" H 1250 4500 50  0001 C CNN
@@ -718,7 +882,7 @@ POWER BUDGET:\nWorst Case 12V input:\nLED Strips:\nSearches put them somewhere n
 Text Notes -3850 2700 0    60   ~ 0
 Barrel jack is 2.1mmx5.5mm\nCompatible supply could be:\nSDI65-12-UDC-P5R (this is likely overkill, we could probably use a cheaper one)
 $Comp
-L power:+12V #PWR027
+L +12V #PWR027
 U 1 1 5AED1397
 P 14500 11000
 F 0 "#PWR027" H 14500 10850 50  0001 C CNN
@@ -1030,7 +1194,7 @@ Wire Wire Line
 	14650 11150 14650 11000
 Connection ~ 14650 11000
 $Comp
-L USER_SYMBOLS:R R22
+L R R22
 U 1 1 5AF22300
 P 12550 9650
 F 0 "R22" V 12450 9650 50  0000 C CNN
@@ -1043,7 +1207,7 @@ $EndComp
 Text GLabel 12150 9450 0    50   Input ~ 0
 TOPUP_PUMP
 $Comp
-L power:+12V #PWR028
+L +12V #PWR028
 U 1 1 5AF22307
 P 14050 9000
 F 0 "#PWR028" H 14050 8850 50  0001 C CNN
@@ -1054,7 +1218,7 @@ F 3 "" H 14050 9000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MOSFETS:PSMN022-30PL,127 Q9
+L PSMN022-30PL,127 Q9
 U 1 1 5AF22313
 P 12850 9350
 F 0 "Q9" H 13050 9150 50  0000 L CNN
@@ -1065,7 +1229,7 @@ F 3 "" H 13100 9450 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR029
+L GND #PWR029
 U 1 1 5AF22319
 P 12950 9900
 F 0 "#PWR029" H 12950 9650 50  0001 C CNN
@@ -1076,7 +1240,7 @@ F 3 "" H 12950 9900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_CAPACITORS:5ZLH100MEFC6.3X11 C6
+L 5ZLH100MEFC6.3X11 C6
 U 1 1 5AF22320
 P 13900 9650
 F 0 "C6" H 13925 9750 50  0000 L CNN
@@ -1132,7 +1296,7 @@ TOPUP_PUMP
 Wire Wire Line
 	3600 1600 3800 1600
 $Comp
-L power:+12V #PWR030
+L +12V #PWR030
 U 1 1 5AF270A3
 P 1600 1600
 F 0 "#PWR030" H 1600 1450 50  0001 C CNN
@@ -1147,7 +1311,7 @@ Wire Wire Line
 Wire Wire Line
 	1600 2200 1600 1600
 $Comp
-L OLD_LIBS:GND #PWR031
+L GND #PWR031
 U 1 1 5AF2AA84
 P 3850 1350
 F 0 "#PWR031" H 3850 1100 50  0001 C CNN
@@ -1168,7 +1332,7 @@ Wire Notes Line
 Wire Notes Line
 	10150 700  9050 700 
 $Comp
-L Device:LED_Small D8
+L Led_Small D8
 U 1 1 5AF362A1
 P 10000 2400
 F 0 "D8" H 9850 2450 50  0000 L CNN
@@ -1179,7 +1343,7 @@ F 3 "" V 10000 2400 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R26
+L R R26
 U 1 1 5AF362A7
 P 10000 2700
 F 0 "R26" V 9950 2600 50  0000 C CNN
@@ -1192,7 +1356,7 @@ $EndComp
 Wire Wire Line
 	10000 2550 10000 2500
 $Comp
-L OLD_LIBS:GND #PWR032
+L GND #PWR032
 U 1 1 5AF362AE
 P 10000 2900
 F 0 "#PWR032" H 10000 2650 50  0001 C CNN
@@ -1216,7 +1380,7 @@ Wire Notes Line
 	9900 3100 10150 3100
 Connection ~ 10000 2100
 $Comp
-L Device:LED_Small D14
+L Led_Small D14
 U 1 1 5AF36C38
 P 11000 2400
 F 0 "D14" H 10800 2450 50  0000 L CNN
@@ -1227,7 +1391,7 @@ F 3 "" V 11000 2400 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R32
+L R R32
 U 1 1 5AF36C3E
 P 11000 2700
 F 0 "R32" V 10950 2600 50  0000 C CNN
@@ -1240,7 +1404,7 @@ $EndComp
 Wire Wire Line
 	11000 2550 11000 2500
 $Comp
-L OLD_LIBS:GND #PWR033
+L GND #PWR033
 U 1 1 5AF36C45
 P 11000 2900
 F 0 "#PWR033" H 11000 2650 50  0001 C CNN
@@ -1263,7 +1427,7 @@ Wire Notes Line
 Wire Notes Line
 	10900 3100 11150 3100
 $Comp
-L Device:LED_Small D18
+L Led_Small D18
 U 1 1 5AF3A35E
 P 12250 6150
 F 0 "D18" H 12100 6200 50  0000 L CNN
@@ -1274,7 +1438,7 @@ F 3 "" V 12250 6150 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R36
+L R R36
 U 1 1 5AF3A364
 P 12250 6450
 F 0 "R36" V 12200 6350 50  0000 C CNN
@@ -1287,7 +1451,7 @@ $EndComp
 Wire Wire Line
 	12250 6300 12250 6250
 $Comp
-L OLD_LIBS:GND #PWR034
+L GND #PWR034
 U 1 1 5AF3A36B
 P 12250 6650
 F 0 "#PWR034" H 12250 6400 50  0001 C CNN
@@ -1311,7 +1475,7 @@ Wire Notes Line
 	12150 6850 12400 6850
 Connection ~ 12250 5950
 $Comp
-L Device:LED_Small D19
+L Led_Small D19
 U 1 1 5AF3AAD5
 P 12250 7350
 F 0 "D19" H 12100 7400 50  0000 L CNN
@@ -1322,7 +1486,7 @@ F 3 "" V 12250 7350 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R37
+L R R37
 U 1 1 5AF3AADB
 P 12250 7650
 F 0 "R37" V 12200 7550 50  0000 C CNN
@@ -1335,7 +1499,7 @@ $EndComp
 Wire Wire Line
 	12250 7500 12250 7450
 $Comp
-L OLD_LIBS:GND #PWR035
+L GND #PWR035
 U 1 1 5AF3AAE2
 P 12250 7850
 F 0 "#PWR035" H 12250 7600 50  0001 C CNN
@@ -1359,7 +1523,7 @@ Wire Notes Line
 	12150 8050 12400 8050
 Connection ~ 12250 7150
 $Comp
-L Device:LED_Small D20
+L Led_Small D20
 U 1 1 5AF3B1EA
 P 12250 8550
 F 0 "D20" H 12100 8600 50  0000 L CNN
@@ -1370,7 +1534,7 @@ F 3 "" V 12250 8550 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R38
+L R R38
 U 1 1 5AF3B1F0
 P 12250 8850
 F 0 "R38" V 12200 8750 50  0000 C CNN
@@ -1383,7 +1547,7 @@ $EndComp
 Wire Wire Line
 	12250 8700 12250 8650
 $Comp
-L OLD_LIBS:GND #PWR036
+L GND #PWR036
 U 1 1 5AF3B1F7
 P 12250 9050
 F 0 "#PWR036" H 12250 8800 50  0001 C CNN
@@ -1407,7 +1571,7 @@ Wire Notes Line
 	12150 9250 12400 9250
 Connection ~ 12250 8350
 $Comp
-L Device:LED_Small D21
+L Led_Small D21
 U 1 1 5AF3B5E8
 P 12250 9650
 F 0 "D21" H 12100 9700 50  0000 L CNN
@@ -1418,7 +1582,7 @@ F 3 "" V 12250 9650 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R39
+L R R39
 U 1 1 5AF3B5EE
 P 12250 9950
 F 0 "R39" V 12200 9850 50  0000 C CNN
@@ -1431,7 +1595,7 @@ $EndComp
 Wire Wire Line
 	12250 9800 12250 9750
 $Comp
-L OLD_LIBS:GND #PWR037
+L GND #PWR037
 U 1 1 5AF3B5F5
 P 12250 10150
 F 0 "#PWR037" H 12250 9900 50  0001 C CNN
@@ -1455,7 +1619,7 @@ Wire Notes Line
 	12150 10350 12400 10350
 Connection ~ 12250 9450
 $Comp
-L Device:LED_Small D17
+L Led_Small D17
 U 1 1 5AF3BB57
 P 12250 10900
 F 0 "D17" H 12100 10950 50  0000 L CNN
@@ -1466,7 +1630,7 @@ F 3 "" V 12250 10900 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R35
+L R R35
 U 1 1 5AF3BB5D
 P 12250 11200
 F 0 "R35" V 12200 11100 50  0000 C CNN
@@ -1479,7 +1643,7 @@ $EndComp
 Wire Wire Line
 	12250 11050 12250 11000
 $Comp
-L OLD_LIBS:GND #PWR038
+L GND #PWR038
 U 1 1 5AF3BB64
 P 12250 11400
 F 0 "#PWR038" H 12250 11150 50  0001 C CNN
@@ -1503,7 +1667,7 @@ Wire Notes Line
 	12150 11600 12400 11600
 Connection ~ 12250 10700
 $Comp
-L Device:LED_Small D11
+L Led_Small D11
 U 1 1 5AF3D2FA
 P 3650 10350
 F 0 "D11" H 3500 10400 50  0000 L CNN
@@ -1514,7 +1678,7 @@ F 3 "" V 3650 10350 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R29
+L R R29
 U 1 1 5AF3D300
 P 3650 10650
 F 0 "R29" V 3600 10550 50  0000 C CNN
@@ -1527,7 +1691,7 @@ $EndComp
 Wire Wire Line
 	3650 10500 3650 10450
 $Comp
-L OLD_LIBS:GND #PWR039
+L GND #PWR039
 U 1 1 5AF3D307
 P 3650 10850
 F 0 "#PWR039" H 3650 10600 50  0001 C CNN
@@ -1550,7 +1714,7 @@ Wire Notes Line
 Wire Notes Line
 	3550 11050 3800 11050
 $Comp
-L Device:LED_Small D13
+L Led_Small D13
 U 1 1 5AF3D313
 P 4000 10350
 F 0 "D13" H 3850 10400 50  0000 L CNN
@@ -1561,7 +1725,7 @@ F 3 "" V 4000 10350 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R31
+L R R31
 U 1 1 5AF3D319
 P 4000 10650
 F 0 "R31" V 3950 10550 50  0000 C CNN
@@ -1574,7 +1738,7 @@ $EndComp
 Wire Wire Line
 	4000 10500 4000 10450
 $Comp
-L OLD_LIBS:GND #PWR040
+L GND #PWR040
 U 1 1 5AF3D320
 P 4000 10850
 F 0 "#PWR040" H 4000 10600 50  0001 C CNN
@@ -1597,7 +1761,7 @@ Wire Notes Line
 Wire Notes Line
 	3900 11050 4150 11050
 $Comp
-L Device:LED_Small D9
+L Led_Small D9
 U 1 1 5AF3D32C
 P 3300 10350
 F 0 "D9" H 3150 10400 50  0000 L CNN
@@ -1608,7 +1772,7 @@ F 3 "" V 3300 10350 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R27
+L R R27
 U 1 1 5AF3D332
 P 3300 10650
 F 0 "R27" V 3250 10550 50  0000 C CNN
@@ -1621,7 +1785,7 @@ $EndComp
 Wire Wire Line
 	3300 10500 3300 10450
 $Comp
-L OLD_LIBS:GND #PWR041
+L GND #PWR041
 U 1 1 5AF3D339
 P 3300 10850
 F 0 "#PWR041" H 3300 10600 50  0001 C CNN
@@ -1644,7 +1808,7 @@ Wire Notes Line
 Wire Notes Line
 	3200 11050 3450 11050
 $Comp
-L OLD_LIBS:+5V #PWR042
+L +5V #PWR042
 U 1 1 5AF3D57C
 P 3650 10100
 F 0 "#PWR042" H 3650 9950 50  0001 C CNN
@@ -1655,7 +1819,7 @@ F 3 "" H 3650 10100 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+3.3V #PWR043
+L +3.3V #PWR043
 U 1 1 5AF3DC2C
 P 4000 10100
 F 0 "#PWR043" H 4000 9950 50  0001 C CNN
@@ -1666,7 +1830,7 @@ F 3 "" H 4000 10100 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:+12V #PWR044
+L +12V #PWR044
 U 1 1 5AF3E74A
 P 3300 10100
 F 0 "#PWR044" H 3300 9950 50  0001 C CNN
@@ -1678,7 +1842,7 @@ F 3 "" H 3300 10100 50  0000 C CNN
 $EndComp
 Connection ~ 11000 2000
 $Comp
-L power:+12V #PWR045
+L +12V #PWR045
 U 1 1 5B07AAC5
 P 5850 1050
 F 0 "#PWR045" H 5850 900 50  0001 C CNN
@@ -1691,7 +1855,7 @@ $EndComp
 Wire Wire Line
 	5850 1150 6200 1150
 $Comp
-L OLD_LIBS:+3.3V #PWR046
+L +3.3V #PWR046
 U 1 1 5B07B341
 P 7900 1050
 F 0 "#PWR046" H 7900 900 50  0001 C CNN
@@ -1761,7 +1925,7 @@ Wire Wire Line
 Wire Wire Line
 	3600 1100 3700 1100
 $Comp
-L USER_MODULES:ARDUINO_SHIELD_R3_WI2C SHIELD1
+L ARDUINO_SHIELD_R3_WI2C SHIELD1
 U 1 1 5B087502
 P 2650 2100
 F 0 "SHIELD1" H 2650 3400 60  0000 C CNN
@@ -1772,7 +1936,7 @@ F 3 "" H 2650 2100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MODULES:PCF8563 U2
+L PCF8563 U2
 U 1 1 5B08C32E
 P 2350 9100
 F 0 "U2" H 2450 9550 50  0000 L CNN
@@ -1805,7 +1969,7 @@ $EndComp
 Wire Wire Line
 	1550 9650 1550 9750
 $Comp
-L OLD_LIBS:GND #PWR047
+L GND #PWR047
 U 1 1 5B09286D
 P 1550 9750
 F 0 "#PWR047" H 1550 9500 50  0001 C CNN
@@ -1816,7 +1980,7 @@ F 3 "" H 1550 9750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR048
+L GND #PWR048
 U 1 1 5B093393
 P 2350 9750
 F 0 "#PWR048" H 2350 9500 50  0001 C CNN
@@ -1845,7 +2009,7 @@ Wire Wire Line
 	2350 8550 2250 8550
 Connection ~ 2350 8550
 $Comp
-L OLD_LIBS:GND #PWR049
+L GND #PWR049
 U 1 1 5B0957DA
 P 1950 8600
 F 0 "#PWR049" H 1950 8350 50  0001 C CNN
@@ -1860,7 +2024,7 @@ Wire Wire Line
 Wire Wire Line
 	1950 8550 1950 8600
 $Comp
-L USER_SYMBOLS:R R4
+L R R4
 U 1 1 5B096D58
 P 3700 900
 F 0 "R4" V 3800 1000 50  0000 C CNN
@@ -1871,7 +2035,7 @@ F 3 "" H 3625 900 30  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L USER_SYMBOLS:R R5
+L R R5
 U 1 1 5B0970EE
 P 3950 900
 F 0 "R5" V 4050 1000 50  0000 C CNN
@@ -1922,7 +2086,7 @@ Wire Wire Line
 Text Notes 3100 6900 0    50   ~ 0
 ENCODER SWITCH:\nA and B will close\nwith contact C\nin quadrature
 $Comp
-L OLD_LIBS:GND #PWR050
+L GND #PWR050
 U 1 1 5B0A64CE
 P 3000 6750
 F 0 "#PWR050" H 3000 6500 50  0001 C CNN
@@ -1951,7 +2115,7 @@ Wire Wire Line
 Text Notes 4850 5350 0    50   ~ 0
 DS18B20 \n1-wire temperature sensor
 $Comp
-L USER_SYMBOLS:R R6
+L R R6
 U 1 1 5B0C01C5
 P 4600 4950
 F 0 "R6" V 4700 5050 50  0000 C CNN
@@ -1996,7 +2160,7 @@ Wire Wire Line
 Wire Wire Line
 	1700 2700 1600 2700
 $Comp
-L OLD_LIBS:+5V #PWR051
+L +5V #PWR051
 U 1 1 5B0DA4BF
 P 5050 10050
 F 0 "#PWR051" H 5050 9900 50  0001 C CNN
@@ -2007,7 +2171,7 @@ F 3 "" H 5050 10050 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR052
+L GND #PWR052
 U 1 1 5B0DA76A
 P 5050 10950
 F 0 "#PWR052" H 5050 10700 50  0001 C CNN
@@ -2042,7 +2206,7 @@ Wire Wire Line
 Text GLabel 4900 10700 0    50   Input ~ 0
 RGB_OUT
 $Comp
-L OLD_LIBS:GND #PWR053
+L GND #PWR053
 U 1 1 5B0DC510
 P 4600 10150
 F 0 "#PWR053" H 4600 9900 50  0001 C CNN
@@ -2056,7 +2220,7 @@ Connection ~ 5050 10150
 Wire Wire Line
 	4700 10150 4600 10150
 $Comp
-L USER_CLOCKS_CRYSTALS:CFS-20632768DZFB Y1
+L CFS-20632768DZFB Y1
 U 1 1 5B0DF230
 P 1800 9300
 F 0 "Y1" H 1800 9400 50  0000 C CNN
@@ -2067,7 +2231,7 @@ F 3 "" H 1800 9300 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR054
+L +5V #PWR054
 U 1 1 5B0E3042
 P 1900 6350
 F 0 "#PWR054" H 1900 6200 50  0001 C CNN
@@ -2082,7 +2246,7 @@ Wire Wire Line
 Wire Wire Line
 	1900 6450 1900 6350
 $Comp
-L dk_PMIC-Voltage_Regulators-Linear:AZ1117CH-3_3TRG1 U3
+L AZ1117CH-3_3TRG1 U3
 U 1 1 5B0E5471
 P 6950 950
 F 0 "U3" H 6900 1100 60  0000 C CNN
@@ -2112,7 +2276,7 @@ Wire Wire Line
 	7350 1050 7450 1050
 Connection ~ 7450 1050
 $Comp
-L USER_DIODES:COM-12999(WS2812) LED1
+L COM-12999(WS2812) LED1
 U 1 1 5B0E8A58
 P 5550 10700
 F 0 "LED1" H 5550 10450 50  0000 C CNN
@@ -2123,7 +2287,7 @@ F 3 "" H 5550 10700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_MOSFETS:DMN65D8L-7 Q1
+L DMN65D8L-7 Q1
 U 1 1 5B0EC051
 P 10700 1900
 F 0 "Q1" V 10200 1850 50  0000 L CNN
@@ -2139,7 +2303,7 @@ Wire Wire Line
 	10750 1550 11100 1550
 Connection ~ 11100 1550
 $Comp
-L USER_DIODES:S1GTR D2
+L S1GTR D2
 U 1 1 5B0F16CC
 P 13550 5750
 F 0 "D2" H 13550 5850 50  0000 C CNN
@@ -2170,7 +2334,7 @@ Wire Wire Line
 	13900 5600 13900 5550
 Connection ~ 13900 5550
 $Comp
-L USER_DIODES:S1GTR D3
+L S1GTR D3
 U 1 1 5B0F869B
 P 13550 6950
 F 0 "D3" H 13550 7050 50  0000 C CNN
@@ -2181,7 +2345,7 @@ F 3 "" H 13550 6950 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L USER_DIODES:S1GTR D4
+L S1GTR D4
 U 1 1 5B0F92D5
 P 13550 8150
 F 0 "D4" H 13550 8250 50  0000 C CNN
@@ -2192,7 +2356,7 @@ F 3 "" H 13550 8150 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L USER_DIODES:S1GTR D5
+L S1GTR D5
 U 1 1 5B0F9671
 P 13550 9250
 F 0 "D5" H 13550 9350 50  0000 C CNN
@@ -2223,7 +2387,7 @@ Wire Wire Line
 Wire Wire Line
 	1600 2900 1700 2900
 $Comp
-L OLD_LIBS:+3.3V #PWR055
+L +3.3V #PWR055
 U 1 1 5B0C3AF5
 P 3700 650
 F 0 "#PWR055" H 3700 500 50  0001 C CNN
@@ -2234,7 +2398,7 @@ F 3 "" H 3700 650 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+3.3V #PWR056
+L +3.3V #PWR056
 U 1 1 5B0C3E9C
 P 3950 650
 F 0 "#PWR056" H 3950 500 50  0001 C CNN
@@ -2247,7 +2411,7 @@ $EndComp
 Text Notes 2700 350  0    60   ~ 0
 I2C lines using 3.3V in order to be compliant with 3V devices\
 $Comp
-L OLD_LIBS:CONN_01X01 P3
+L CONN_01X01 P3
 U 1 1 5B0C62E0
 P 1200 10850
 F 0 "P3" H 1200 10950 50  0000 C CNN
@@ -2258,7 +2422,7 @@ F 3 "" H 1200 10850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:CONN_01X01 P6
+L CONN_01X01 P6
 U 1 1 5B0C6DC0
 P 1650 10850
 F 0 "P6" H 1650 10950 50  0000 C CNN
@@ -2269,7 +2433,7 @@ F 3 "" H 1650 10850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:CONN_01X01 P7
+L CONN_01X01 P7
 U 1 1 5B0C6EE0
 P 2050 10850
 F 0 "P7" H 2050 10950 50  0000 C CNN
@@ -2280,7 +2444,7 @@ F 3 "" H 2050 10850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:CONN_01X01 P8
+L CONN_01X01 P8
 U 1 1 5B0C700D
 P 2450 10850
 F 0 "P8" H 2450 10950 50  0000 C CNN
@@ -2303,7 +2467,7 @@ DISPLAY_RESET
 Wire Wire Line
 	3600 1500 3800 1500
 $Comp
-L USER_CONNECTORS:RJHSE-5080 J3
+L RJHSE-5080 J3
 U 1 1 5B109D83
 P 1350 6800
 F 0 "J3" H 1550 7300 50  0000 C CNN
@@ -2350,7 +2514,7 @@ Wire Wire Line
 Wire Wire Line
 	3900 8400 3900 8600
 $Comp
-L OLD_LIBS:GND #PWR057
+L GND #PWR057
 U 1 1 5B24017F
 P 3900 8600
 F 0 "#PWR057" H 3900 8350 50  0001 C CNN
@@ -2361,7 +2525,7 @@ F 3 "" H 3900 8600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_DIODES:1N4448W-TP D1
+L 1N4448W-TP D1
 U 1 1 5B24135C
 P 2350 8100
 F 0 "D1" H 2350 8200 50  0000 C CNN
@@ -2374,7 +2538,7 @@ $EndComp
 Wire Wire Line
 	2350 7800 2350 7950
 $Comp
-L USER_DIODES:1N4448W-TP D6
+L 1N4448W-TP D6
 U 1 1 5B241DC4
 P 2750 8400
 F 0 "D6" H 2750 8500 50  0000 C CNN
@@ -2390,7 +2554,7 @@ Connection ~ 3000 8400
 Text GLabel 3000 8150 1    60   Input ~ 0
 BATT_BACKUP
 $Comp
-L USER_CONNECTORS:BS-7_2032 BAT1
+L BS-7_2032 BAT1
 U 1 1 5B24898A
 P 3500 8400
 F 0 "BAT1" H 3500 8600 60  0000 C CNN
@@ -2411,7 +2575,7 @@ $EndComp
 Text Notes 2450 7150 0    60   ~ 0
 display address is 0x3C
 $Comp
-L OLD_LIBS:+3.3V #PWR058
+L +3.3V #PWR058
 U 1 1 5B75D207
 P 2350 7800
 F 0 "#PWR058" H 2350 7650 50  0001 C CNN
@@ -2428,7 +2592,7 @@ RX
 Text Notes 11400 2100 0    60   ~ 0
 TX
 $Comp
-L OLD_LIBS:GND #PWR059
+L GND #PWR059
 U 1 1 5B770E78
 P 5850 1700
 F 0 "#PWR059" H 5850 1450 50  0001 C CNN
@@ -2439,7 +2603,7 @@ F 3 "" H 5850 1700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR060
+L GND #PWR060
 U 1 1 5B7712E1
 P 7900 1700
 F 0 "#PWR060" H 7900 1450 50  0001 C CNN
@@ -2452,7 +2616,7 @@ $EndComp
 Connection ~ 7900 1600
 Connection ~ 5850 1600
 $Comp
-L power:+12V #PWR061
+L +12V #PWR061
 U 1 1 5B77686E
 P 5850 2300
 F 0 "#PWR061" H 5850 2150 50  0001 C CNN
@@ -2516,7 +2680,7 @@ Wire Wire Line
 	6200 2550 6200 2400
 Connection ~ 6200 2400
 $Comp
-L dk_PMIC-Voltage_Regulators-Linear:AZ1117CH-3_3TRG1 U4
+L AZ1117CH-3_3TRG1 U4
 U 1 1 5B7768AF
 P 6950 2200
 F 0 "U4" H 6900 2350 60  0000 C CNN
@@ -2546,7 +2710,7 @@ Wire Wire Line
 	7350 2300 7450 2300
 Connection ~ 7450 2300
 $Comp
-L OLD_LIBS:GND #PWR062
+L GND #PWR062
 U 1 1 5B7768BB
 P 5850 2950
 F 0 "#PWR062" H 5850 2700 50  0001 C CNN
@@ -2557,7 +2721,7 @@ F 3 "" H 5850 2950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:GND #PWR063
+L GND #PWR063
 U 1 1 5B7768C1
 P 7900 2950
 F 0 "#PWR063" H 7900 2700 50  0001 C CNN
@@ -2570,7 +2734,7 @@ $EndComp
 Connection ~ 7900 2850
 Connection ~ 5850 2850
 $Comp
-L USER_MODULES:ESP32_devkitc U5
+L ESP32_devkitc U5
 U 1 1 5B7A62B6
 P 12800 1900
 F 0 "U5" H 12800 3150 60  0000 C CNN
@@ -2581,7 +2745,7 @@ F 3 "" H 12800 1900 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L OLD_LIBS:+3.3V #PWR064
+L +3.3V #PWR064
 U 1 1 5B7A6412
 P 13700 850
 F 0 "#PWR064" H 13700 700 50  0001 C CNN
@@ -2606,7 +2770,7 @@ Wire Wire Line
 	13500 2900 13600 2900
 Connection ~ 13600 2900
 $Comp
-L OLD_LIBS:GND #PWR065
+L GND #PWR065
 U 1 1 5B7A840C
 P 13600 3050
 F 0 "#PWR065" H 13600 2800 50  0001 C CNN
@@ -2619,7 +2783,7 @@ $EndComp
 Wire Wire Line
 	2800 4700 2800 4650
 $Comp
-L USER_CONNECTORS:SJ-2523-SMT-TR J5
+L SJ-2523-SMT-TR J5
 U 1 1 5B7AE903
 P 2400 5150
 F 0 "J5" H 2100 5350 50  0000 C CNN
@@ -2630,7 +2794,7 @@ F 3 "" H 3350 5500 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L USER_CONNECTORS:SJ-2523-SMT-TR J6
+L SJ-2523-SMT-TR J6
 U 1 1 5B7AEA4D
 P 4050 5150
 F 0 "J6" H 3750 5350 50  0000 C CNN
@@ -2641,7 +2805,7 @@ F 3 "" H 5000 5500 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L OLD_LIBS:+5V #PWR066
+L +5V #PWR066
 U 1 1 5B7AEE7D
 P 7900 2300
 F 0 "#PWR066" H 7900 2150 50  0001 C CNN
@@ -2652,7 +2816,7 @@ F 3 "" H 7900 2300 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:C C10
+L C C10
 U 1 1 5B7B87C2
 P 5850 1400
 F 0 "C10" H 5750 1450 50  0000 C CNN
@@ -2663,7 +2827,7 @@ F 3 "" H 5775 1400 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:C C13
+L C C13
 U 1 1 5B7BAF60
 P 5850 2650
 F 0 "C13" H 5750 2700 50  0000 C CNN
@@ -2674,7 +2838,7 @@ F 3 "" H 5775 2650 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:C C14
+L C C14
 U 1 1 5B7BB32E
 P 7900 1400
 F 0 "C14" H 7800 1450 50  0000 C CNN
@@ -2685,7 +2849,7 @@ F 3 "" H 7825 1400 30  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L USER_SYMBOLS:C C17
+L C C17
 U 1 1 5B7BBB98
 P 7900 2650
 F 0 "C17" H 7800 2700 50  0000 C CNN

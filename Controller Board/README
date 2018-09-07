@@ -1,0 +1,8 @@
+The controller board will ONLY work with 2.41" displays that use an SSD1305 controller IC, as this is the only one that can communicate via I2C
+In addition, modifications must be made to the display for it to work. There is a set of jumpers on the back of the board, labelled BS1 and BS2
+
+The jumpers must be set to the following positions:
+BS1 - 1
+BS2 - 0
+
+This puts the display into I2C mode, and allows it to communicate with the shield

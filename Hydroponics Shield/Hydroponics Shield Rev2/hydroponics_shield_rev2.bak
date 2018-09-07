@@ -2328,8 +2328,8 @@ Wire Wire Line
 	3700 650  3700 750 
 Wire Wire Line
 	3950 650  3950 750 
-Text Notes 8600 10450 0    60   ~ 0
-TODO:\nverify I2C addresses will not conflict
+Text Notes 6700 11050 0    60   ~ 0
+TODO FOR REV2\nPut discrete 5V regulator module on board, the one on the arduino is getting hot\nbrighter LEDs for the button board\nPower the RTC from 3.3V, not 5V\nPut the diodes for the RTC into the BOM\nmuch lower value pullup resistors for the I2C bus\nmove ethernet connector so that it sticks out from the board slightly on controller\nmove ethernet connector on controller to other side of the board\nadd mounting holes to controller\n
 Text Notes 2600 9750 0    60   ~ 0
 I2C Addresses:\nRead: A3H\nWrite: A2H\n
 Text GLabel 3000 9000 2    50   Input ~ 0
