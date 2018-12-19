@@ -457,10 +457,6 @@ void readTemperature(void)
 void readPH(void) //read the PH values, and map the output from 0-1024, to one integer place, and one decimal place
 {
   uint16_t ph_raw = analogRead(PH_IN);
-  #ifdef DEBUG
-    Serial.print("rawph:");
-    Serial.print(ph_raw);
-  #endif
   ph_buffer[ph_buf_index] = ph_raw;
   ph_buf_index++;
   if(ph_buf_index>PH_BUFSIZE)
@@ -471,17 +467,14 @@ void readPH(void) //read the PH values, and map the output from 0-1024, to one i
     ph_raw = ph_raw+ph_buffer[i]; //get the total
   }
   ph_raw = ph_raw/PH_BUFSIZE; //average
-  #ifdef DEBUG
-    Serial.print( "filtph:");
-    Serial.print(ph_raw);
-    Serial.print(" offset:");
-    Serial.print(ph_offset);
-  #endif
+
+  //PH formula: PH(x) = PH(standard)  +  ((Vstandard_solution - Vunknown_solution)*F / RTln(10))
+  //ALL FORMULAE DERIVED FROM http://www.ti.com/lit/an/snoa529a/snoa529a.pdf
 
   ph_raw = ph_raw + ph_offset;            //raw voltage in minus offset
   //dividing 1024 into 14 sections (ph goes from 0 to 14)
   int16_t vprobe = map(ph_raw,0,1023,-2500,2500);
-  float ph_float = REFERENCE_PH + ((float)(-vprobe)*0.01708389);
+  float ph_float = REFERENCE_PH + ((float)((-vprobe)/1000.0)*5039.7483/(23.0 + 273.0));
   ph_int = (uint8_t)floor(ph_float);
   ph_frac = (uint8_t)floor(10*(ph_float-ph_int)); //get only the first decimal place
 }
