@@ -1,0 +1,8 @@
+ERRORS ON THE PCB:
+
+software serial will not work for comms with the ESP, as it can't actually do full duplex. 
+to rectify this, I'm  using the main arduino RX to receive data from the ESP, and the software TX to send data.
+This requires pin A3 to be bridged to RX on the arduino.
+
+The ESP doesn't take power from 3.3V, that is a regulator output, it should instead get power from +5V
+

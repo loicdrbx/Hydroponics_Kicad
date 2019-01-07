@@ -2850,4 +2850,8 @@ Text Notes 8000 2050 0    60   ~ 0
 TODO:\nConnect this to ground...\n
 Text Notes 2450 7150 0    60   ~ 0
 display address is 0x3C
+Text Label 9050 3450 0    60   ~ 0
+esptx
+Text Label 9100 3550 0    60   ~ 0
+esprx
 $EndSCHEMATC
